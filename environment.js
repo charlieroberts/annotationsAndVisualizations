@@ -126,7 +126,6 @@ const createEditor = function( selector, shouldAnnotate = true ) {
   play.innerText = 'play'
   play.classList.add( 'float-right' )
   play.onclick = ()=> {
-    console.log( 'initialized:', Gibber.initialized )
     if( Gibber.initialized === true ) {
       playCode( cm, shouldAnnotate )
     }else{
@@ -139,7 +138,11 @@ const createEditor = function( selector, shouldAnnotate = true ) {
   const stop = document.createElement( 'button' )
   stop.classList.add( 'float-right' )
   stop.innerText = 'stop'
-  stop.onclick = () => Gibber.clear()
+  stop.onclick = function() {
+    Gibber.clear()
+    for( let key of environment.proxies ) delete window[ key ]
+    environment.proxies.length = 0
+  }
 
   container.appendChild( stop )
   container.appendChild( play )
