@@ -51,7 +51,7 @@
 		"aliasify": "^2.1.0",
 		"codemirror": "^5.40.2",
 		"normalize.css": "~5.0.0",
-		"standardized-audio-context": "^16.0.1"
+		"standardized-audio-context": "^16.1.1"
 	},
 	"devDependencies": {
 		"autoprefixer": "^6.5.4",
@@ -91,14 +91,14 @@
 		"test": "run-s build lint ava",
 		"precommit": "run-p test"
 	},
-  "browserify": {
-    "transform": [
-      "aliasify"
-    ]
-  },
-  "aliasify": {
-    "aliases": {
-      "../../../js/utility.js" : "./utility.js" 
-    }
-  }
+	"browserify": {
+		"transform": [
+			"aliasify"
+		]
+	},
+	"aliasify": {
+		"aliases": {
+			"../../../js/utility.js": "./utility.js"
+		}
+	}
 }

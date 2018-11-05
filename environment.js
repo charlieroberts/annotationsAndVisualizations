@@ -157,7 +157,7 @@ const playCode = function( cm, shouldAnnotate=true ) {
 window.onload = function() {
   window.sac = sac
   const workletPath = 'gibberish_worklet.js' 
-  Gibber.init( workletPath, new sac.AudioContext() )
+  Gibber.init( workletPath, new AudioContext({ latencyHint:.05 }), sac )
 
   environment.editor = cm
   window.Environment = environment

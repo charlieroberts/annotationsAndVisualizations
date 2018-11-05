@@ -514,7 +514,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       pos.loc.start.ch += i
       pos.loc.end.ch = pos.loc.start.ch + 1
 
-      marker = cm.markText( pos.loc.start, pos.loc.end, { className:`step_${ patternObject.id }_${i} euclid` })
+      patternObject.marker = marker = cm.markText( pos.loc.start, pos.loc.end, { className:`step_${ patternObject.id }_${i} euclid` })
       track.markup.textMarkers.pattern[ i ] = marker
     }
   }
@@ -568,6 +568,14 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       patternObject.update()
     }
   })
+
+  patternObject.clear = () => {
+    if( marker !== undefined )
+      marker.clear()
+    patternObject.reset()
+  }
+
+  Gibber.subscribe( 'clear', patternObject.clear )
 
   Marker._addPatternFilter( patternObject )
 }  
@@ -1046,6 +1054,8 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     cm.replaceRange( replacement, commentPos.from, end )
     patternObject.commentMarker.clear()
   }
+
+  Gibber.subscribe( 'clear', patternObject.clear )
 
   return update 
 }
@@ -1859,6 +1869,8 @@ const Marker = {
     patternObject.clear = () => {
       patternObject.marker.clear()
     }
+
+    Gibber.subscribe( 'clear', patternObject.clear )
   },
 
   // Patterns can have *filters* which are functions
@@ -2250,7 +2262,7 @@ const playCode = function( cm, shouldAnnotate=true ) {
 window.onload = function() {
   window.sac = sac
   const workletPath = 'gibberish_worklet.js' 
-  Gibber.init( workletPath, new sac.AudioContext() )
+  Gibber.init( workletPath, new AudioContext({ latencyHint:.05 }), sac )
 
   environment.editor = cm
   window.Environment = environment
@@ -8676,7 +8688,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 }(this, (function (exports,asyncArrayBufferBroker) { 'use strict';
 
 	// tslint:disable-next-line:max-line-length
-	var worker = "!function(r){var n={};function o(e){if(n[e])return n[e].exports;var t=n[e]={i:e,l:!1,exports:{}};return r[e].call(t.exports,t,t.exports,o),t.l=!0,t.exports}o.m=r,o.c=n,o.d=function(e,t,r){o.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},o.r=function(e){\"undefined\"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:\"Module\"}),Object.defineProperty(e,\"__esModule\",{value:!0})},o.t=function(t,e){if(1&e&&(t=o(t)),8&e)return t;if(4&e&&\"object\"==typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(o.r(r),Object.defineProperty(r,\"default\",{enumerable:!0,value:t}),2&e&&\"string\"!=typeof t)for(var n in t)o.d(r,n,function(e){return t[e]}.bind(null,n));return r},o.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return o.d(t,\"a\",t),t},o.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},o.p=\"\",o(o.s=0)}([function(e,t,r){\"use strict\";r.r(t);r(1)},function(e,t,r){!function(e){\"use strict\";e.createWorker(self,{allocate:function(e){var t=e.length,r=new ArrayBuffer(t);return{result:r,transferables:[r]}},deallocate:function(){return{result:void 0}}})}(r(2))},function(e,t,r){!function(e,t,g,l,h){\"use strict\";g=g&&g.hasOwnProperty(\"default\")?g.default:g,l=l&&l.hasOwnProperty(\"default\")?l.default:l;var r={INTERNAL_ERROR:-32603,INVALID_PARAMS:-32602,METHOD_NOT_FOUND:-32601},y=t.compile({message:'The requested method called \"${method}\" is not supported.',status:r.METHOD_NOT_FOUND}),w=t.compile({message:'The handler of the method called \"${method}\" returned no required result.',status:r.INTERNAL_ERROR}),x=t.compile({message:'The handler of the method called \"${method}\" returned an unexpected result.',status:r.INTERNAL_ERROR}),d=t.compile({message:'The specified parameter called \"portId\" with the given value \"${portId}\" does not identify a port connected to this worker.',status:r.INVALID_PARAMS}),p=function(){return new Promise(function(r){var e=new ArrayBuffer(0),t=new MessageChannel,n=t.port1,o=t.port2;n.onmessage=function(e){var t=e.data;return r(null!==t)},o.postMessage(e,[e])})},b=new Map;e.createWorker=function e(t,r){var n,v,m,o,i,a,u,c=2<arguments.length&&void 0!==arguments[2]?arguments[2]:function(){return!0},s=(o=e,i=r,a=c,Object.assign({},i,{connect:function(e){var t=e.port;t.start();var r=o(t,i),n=h.generateUniqueNumber(b);return b.set(n,function(){r(),t.close(),b.delete(n)}),{result:n}},disconnect:function(e){var t=e.portId,r=b.get(t);if(void 0===r)throw d({portId:t.toString()});return r(),{result:null}},isSupported:(u=l(g.mark(function e(){var t,r;return g.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,p();case 2:if(!e.sent){e.next=14;break}if((t=a())instanceof Promise)return e.next=8,t;e.next=11;break;case 8:e.t0=e.sent,e.next=12;break;case 11:e.t0=t;case 12:return r=e.t0,e.abrupt(\"return\",{result:r});case 14:return e.abrupt(\"return\",{result:!1});case 15:case\"end\":return e.stop()}},e,this)})),function(){return u.apply(this,arguments)})})),f=(v=t,m=s,n=l(g.mark(function e(t){var r,n,o,i,a,u,c,s,f,l,h,d,p;return g.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:if(r=t.data,n=r.id,o=r.method,i=r.params,a=m[o],e.prev=2,void 0===a)throw y({method:o});e.next=5;break;case 5:if(void 0===(u=void 0===i?a():a(i)))throw w({method:o});e.next=8;break;case 8:if(u instanceof Promise)return e.next=11,u;e.next=14;break;case 11:e.t0=e.sent,e.next=15;break;case 14:e.t0=u;case 15:if(c=e.t0,null!==n){e.next=21;break}if(void 0!==c.result)throw x({method:o});e.next=19;break;case 19:e.next=25;break;case 21:if(void 0===c.result)throw x({method:o});e.next=23;break;case 23:s=c.result,f=c.transferables,l=void 0===f?[]:f,v.postMessage({id:n,result:s},l);case 25:e.next=31;break;case 27:e.prev=27,e.t1=e.catch(2),h=e.t1.message,d=e.t1.status,p=void 0===d?-32603:d,v.postMessage({error:{code:p,message:h},id:n});case 31:case\"end\":return e.stop()}},e,this,[[2,27]])})),function(e){return n.apply(this,arguments)});return t.addEventListener(\"message\",f),function(){return t.removeEventListener(\"message\",f)}},e.isSupported=p,Object.defineProperty(e,\"__esModule\",{value:!0})}(t,r(3),r(10),r(13),r(14))},function(e,t,r){!function(e,s,o,i){\"use strict\";s=s&&s.hasOwnProperty(\"default\")?s.default:s,o=o&&o.hasOwnProperty(\"default\")?o.default:o,i=i&&i.hasOwnProperty(\"default\")?i.default:i;var f=function(e,t){return void 0===t?e:t.reduce(function(e,t){if(\"capitalize\"!==t)return\"dashify\"===t?o(e):\"prependIndefiniteArticle\"===t?\"\".concat(i(e),\" \").concat(e):e;var r=e.charAt(0).toUpperCase(),n=e.slice(1);return\"\".concat(r).concat(n)},e)},r=function(e,o){for(var t=/\\${([^.}]+)((\\.[^(]+\\(\\))*)}/g,r=[],n=t.exec(e);null!==n;){var i={modifiers:[],name:n[1]};if(void 0!==n[3])for(var a=/\\.[^(]+\\(\\)/g,u=a.exec(n[2]);null!==u;)i.modifiers.push(u[0].slice(1,-2)),u=a.exec(n[2]);r.push(i),n=t.exec(e)}var c=r.reduce(function(e,n){return e.map(function(e){return\"string\"==typeof e?e.split((t=n,r=t.name+t.modifiers.map(function(e){return\"\\\\.\".concat(e,\"\\\\(\\\\)\")}).join(\"\"),new RegExp(\"\\\\$\\\\{\".concat(r,\"}\"),\"g\"))).reduce(function(e,t,r){return 0===r?[t]:n.name in o?s(e).concat([f(o[n.name],n.modifiers),t]):s(e).concat([function(e){return f(e[n.name],n.modifiers)},t])},[]):[e];var t,r}).reduce(function(e,t){return s(e).concat(s(t))},[])},[e]);return function(r){return c.reduce(function(e,t){return\"string\"==typeof t?s(e).concat([t]):s(e).concat([t(r)])},[]).join(\"\")}};e.compile=function(a){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:{},u=void 0===a.code?void 0:r(a.code,e),c=void 0===a.message?void 0:r(a.message,e);function t(){var e=0<arguments.length&&void 0!==arguments[0]?arguments[0]:{},t=1<arguments.length?arguments[1]:void 0,r=void 0===t&&(e instanceof Error||void 0!==e.code&&\"Exception\"===e.code.slice(-9))?{cause:e,missingParameters:{}}:{cause:t,missingParameters:e},n=r.cause,o=r.missingParameters,i=void 0===c?new Error:new Error(c(o));return null!==n&&(i.cause=n),void 0!==u&&(i.code=u(o)),void 0!==a.status&&(i.status=a.status),i}return t},Object.defineProperty(e,\"__esModule\",{value:!0})}(t,r(4),r(8),r(9))},function(e,t,r){var n=r(5),o=r(6),i=r(7);e.exports=function(e){return n(e)||o(e)||i()}},function(e,t){e.exports=function(e){if(Array.isArray(e)){for(var t=0,r=new Array(e.length);t<e.length;t++)r[t]=e[t];return r}}},function(e,t){e.exports=function(e){if(Symbol.iterator in Object(e)||\"[object Arguments]\"===Object.prototype.toString.call(e))return Array.from(e)}},function(e,t){e.exports=function(){throw new TypeError(\"Invalid attempt to spread non-iterable instance\")}},function(e,t,r){\"use strict\";e.exports=function(e,t){if(\"string\"!=typeof e)throw new TypeError(\"expected a string\");return e.trim().replace(/([a-z])([A-Z])/g,\"$1-$2\").replace(/\\W/g,function(e){return/[\xC0-\u017E]/.test(e)?e:\"-\"}).replace(/^-+|-+$/g,\"\").replace(/-{2,}/g,function(e){return t&&t.condense?\"-\":e}).toLowerCase()}},function(e,t){var r=function(e){var t,r,n=/\\w+/.exec(e);if(!n)return\"an\";var o=(r=n[0]).toLowerCase(),i=[\"honest\",\"hour\",\"hono\"];for(t in i)if(0==o.indexOf(i[t]))return\"an\";if(1==o.length)return 0<=\"aedhilmnorsx\".indexOf(o)?\"an\":\"a\";if(r.match(/(?!FJO|[HLMNS]Y.|RY[EO]|SQU|(F[LR]?|[HL]|MN?|N|RH?|S[CHKLMNPTVW]?|X(YL)?)[AEIOU])[FHLMNRSX][A-Z]/))return\"an\";var a=[/^e[uw]/,/^onc?e\\b/,/^uni([^nmd]|mo)/,/^u[bcfhjkqrst][aeiou]/];for(t=0;t<a.length;t++)if(o.match(a[t]))return\"a\";return r.match(/^U[NK][AIEO]/)?\"a\":r==r.toUpperCase()?0<=\"aedhilmnorsx\".indexOf(o[0])?\"an\":\"a\":0<=\"aeiou\".indexOf(o[0])?\"an\":o.match(/^y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)/)?\"an\":\"a\"};void 0!==e&&void 0!==e.exports?e.exports=r:window.indefiniteArticle=r},function(e,t,r){e.exports=r(11)},function(e,t,r){var n=function(){return this||\"object\"==typeof self&&self}()||Function(\"return this\")(),o=n.regeneratorRuntime&&0<=Object.getOwnPropertyNames(n).indexOf(\"regeneratorRuntime\"),i=o&&n.regeneratorRuntime;if(n.regeneratorRuntime=void 0,e.exports=r(12),o)n.regeneratorRuntime=i;else try{delete n.regeneratorRuntime}catch(e){n.regeneratorRuntime=void 0}},function(M,e){!function(e){\"use strict\";var c,t=Object.prototype,s=t.hasOwnProperty,r=\"function\"==typeof Symbol?Symbol:{},o=r.iterator||\"@@iterator\",n=r.asyncIterator||\"@@asyncIterator\",i=r.toStringTag||\"@@toStringTag\",a=\"object\"==typeof M,u=e.regeneratorRuntime;if(u)a&&(M.exports=u);else{(u=e.regeneratorRuntime=a?M.exports:{}).wrap=w;var l=\"suspendedStart\",h=\"suspendedYield\",d=\"executing\",p=\"completed\",v={},f={};f[o]=function(){return this};var m=Object.getPrototypeOf,g=m&&m(m(k([])));g&&g!==t&&s.call(g,o)&&(f=g);var y=E.prototype=b.prototype=Object.create(f);O.prototype=y.constructor=E,E.constructor=O,E[i]=O.displayName=\"GeneratorFunction\",u.isGeneratorFunction=function(e){var t=\"function\"==typeof e&&e.constructor;return!!t&&(t===O||\"GeneratorFunction\"===(t.displayName||t.name))},u.mark=function(e){return Object.setPrototypeOf?Object.setPrototypeOf(e,E):(e.__proto__=E,i in e||(e[i]=\"GeneratorFunction\")),e.prototype=Object.create(y),e},u.awrap=function(e){return{__await:e}},L(_.prototype),_.prototype[n]=function(){return this},u.AsyncIterator=_,u.async=function(e,t,r,n){var o=new _(w(e,t,r,n));return u.isGeneratorFunction(t)?o:o.next().then(function(e){return e.done?e.value:o.next()})},L(y),y[i]=\"Generator\",y[o]=function(){return this},y.toString=function(){return\"[object Generator]\"},u.keys=function(r){var n=[];for(var e in r)n.push(e);return n.reverse(),function e(){for(;n.length;){var t=n.pop();if(t in r)return e.value=t,e.done=!1,e}return e.done=!0,e}},u.values=k,R.prototype={constructor:R,reset:function(e){if(this.prev=0,this.next=0,this.sent=this._sent=c,this.done=!1,this.delegate=null,this.method=\"next\",this.arg=c,this.tryEntries.forEach(j),!e)for(var t in this)\"t\"===t.charAt(0)&&s.call(this,t)&&!isNaN(+t.slice(1))&&(this[t]=c)},stop:function(){this.done=!0;var e=this.tryEntries[0].completion;if(\"throw\"===e.type)throw e.arg;return this.rval},dispatchException:function(r){if(this.done)throw r;var n=this;function e(e,t){return i.type=\"throw\",i.arg=r,n.next=e,t&&(n.method=\"next\",n.arg=c),!!t}for(var t=this.tryEntries.length-1;0<=t;--t){var o=this.tryEntries[t],i=o.completion;if(\"root\"===o.tryLoc)return e(\"end\");if(o.tryLoc<=this.prev){var a=s.call(o,\"catchLoc\"),u=s.call(o,\"finallyLoc\");if(a&&u){if(this.prev<o.catchLoc)return e(o.catchLoc,!0);if(this.prev<o.finallyLoc)return e(o.finallyLoc)}else if(a){if(this.prev<o.catchLoc)return e(o.catchLoc,!0)}else{if(!u)throw new Error(\"try statement without catch or finally\");if(this.prev<o.finallyLoc)return e(o.finallyLoc)}}}},abrupt:function(e,t){for(var r=this.tryEntries.length-1;0<=r;--r){var n=this.tryEntries[r];if(n.tryLoc<=this.prev&&s.call(n,\"finallyLoc\")&&this.prev<n.finallyLoc){var o=n;break}}o&&(\"break\"===e||\"continue\"===e)&&o.tryLoc<=t&&t<=o.finallyLoc&&(o=null);var i=o?o.completion:{};return i.type=e,i.arg=t,o?(this.method=\"next\",this.next=o.finallyLoc,v):this.complete(i)},complete:function(e,t){if(\"throw\"===e.type)throw e.arg;return\"break\"===e.type||\"continue\"===e.type?this.next=e.arg:\"return\"===e.type?(this.rval=this.arg=e.arg,this.method=\"return\",this.next=\"end\"):\"normal\"===e.type&&t&&(this.next=t),v},finish:function(e){for(var t=this.tryEntries.length-1;0<=t;--t){var r=this.tryEntries[t];if(r.finallyLoc===e)return this.complete(r.completion,r.afterLoc),j(r),v}},catch:function(e){for(var t=this.tryEntries.length-1;0<=t;--t){var r=this.tryEntries[t];if(r.tryLoc===e){var n=r.completion;if(\"throw\"===n.type){var o=n.arg;j(r)}return o}}throw new Error(\"illegal catch attempt\")},delegateYield:function(e,t,r){return this.delegate={iterator:k(e),resultName:t,nextLoc:r},\"next\"===this.method&&(this.arg=c),v}}}function w(e,t,r,n){var i,a,u,c,o=t&&t.prototype instanceof b?t:b,s=Object.create(o.prototype),f=new R(n||[]);return s._invoke=(i=e,a=r,u=f,c=l,function(e,t){if(c===d)throw new Error(\"Generator is already running\");if(c===p){if(\"throw\"===e)throw t;return A()}for(u.method=e,u.arg=t;;){var r=u.delegate;if(r){var n=N(r,u);if(n){if(n===v)continue;return n}}if(\"next\"===u.method)u.sent=u._sent=u.arg;else if(\"throw\"===u.method){if(c===l)throw c=p,u.arg;u.dispatchException(u.arg)}else\"return\"===u.method&&u.abrupt(\"return\",u.arg);c=d;var o=x(i,a,u);if(\"normal\"===o.type){if(c=u.done?p:h,o.arg===v)continue;return{value:o.arg,done:u.done}}\"throw\"===o.type&&(c=p,u.method=\"throw\",u.arg=o.arg)}}),s}function x(e,t,r){try{return{type:\"normal\",arg:e.call(t,r)}}catch(e){return{type:\"throw\",arg:e}}}function b(){}function O(){}function E(){}function L(e){[\"next\",\"throw\",\"return\"].forEach(function(t){e[t]=function(e){return this._invoke(t,e)}})}function _(c){var t;this._invoke=function(r,n){function e(){return new Promise(function(e,t){!function t(e,r,n,o){var i=x(c[e],c,r);if(\"throw\"!==i.type){var a=i.arg,u=a.value;return u&&\"object\"==typeof u&&s.call(u,\"__await\")?Promise.resolve(u.__await).then(function(e){t(\"next\",e,n,o)},function(e){t(\"throw\",e,n,o)}):Promise.resolve(u).then(function(e){a.value=e,n(a)},function(e){return t(\"throw\",e,n,o)})}o(i.arg)}(r,n,e,t)})}return t=t?t.then(e,e):e()}}function N(e,t){var r=e.iterator[t.method];if(r===c){if(t.delegate=null,\"throw\"===t.method){if(e.iterator.return&&(t.method=\"return\",t.arg=c,N(e,t),\"throw\"===t.method))return v;t.method=\"throw\",t.arg=new TypeError(\"The iterator does not provide a 'throw' method\")}return v}var n=x(r,e.iterator,t.arg);if(\"throw\"===n.type)return t.method=\"throw\",t.arg=n.arg,t.delegate=null,v;var o=n.arg;return o?o.done?(t[e.resultName]=o.value,t.next=e.nextLoc,\"return\"!==t.method&&(t.method=\"next\",t.arg=c),t.delegate=null,v):o:(t.method=\"throw\",t.arg=new TypeError(\"iterator result is not an object\"),t.delegate=null,v)}function P(e){var t={tryLoc:e[0]};1 in e&&(t.catchLoc=e[1]),2 in e&&(t.finallyLoc=e[2],t.afterLoc=e[3]),this.tryEntries.push(t)}function j(e){var t=e.completion||{};t.type=\"normal\",delete t.arg,e.completion=t}function R(e){this.tryEntries=[{tryLoc:\"root\"}],e.forEach(P,this),this.reset(!0)}function k(t){if(t){var e=t[o];if(e)return e.call(t);if(\"function\"==typeof t.next)return t;if(!isNaN(t.length)){var r=-1,n=function e(){for(;++r<t.length;)if(s.call(t,r))return e.value=t[r],e.done=!1,e;return e.value=c,e.done=!0,e};return n.next=n}}return{next:A}}function A(){return{value:c,done:!0}}}(function(){return this||\"object\"==typeof self&&self}()||Function(\"return this\")())},function(e,t){function c(e,t,r,n,o,i,a){try{var u=e[i](a),c=u.value}catch(e){return void r(e)}u.done?t(c):Promise.resolve(c).then(n,o)}e.exports=function(u){return function(){var e=this,a=arguments;return new Promise(function(t,r){var n=u.apply(e,a);function o(e){c(n,t,r,o,i,\"next\",e)}function i(e){c(n,t,r,o,i,\"throw\",e)}o(void 0)})}}},function(e,t,r){!function(e){\"use strict\";var n=new WeakMap,o=Number.MAX_SAFE_INTEGER||9007199254740991,i=function(e,t){return n.set(e,t),t},r=function(e){var t=n.get(e),r=void 0===t?e.size:2147483648<t?0:t+1;if(!e.has(r))return i(e,r);if(e.size<1073741824){for(;e.has(r);)r=Math.floor(2147483648*Math.random());return i(e,r)}if(e.size>o)throw new Error(\"Congratulations, you created a collection of unique numbers which uses all available integers!\");for(;e.has(r);)r=Math.floor(Math.random()*o);return i(e,r)};e.addUniqueNumber=function(e){var t=r(e);return e.add(t),t},e.generateUniqueNumber=r,Object.defineProperty(e,\"__esModule\",{value:!0})}(t)}]);";
+	var worker = "!function(r){var n={};function o(e){if(n[e])return n[e].exports;var t=n[e]={i:e,l:!1,exports:{}};return r[e].call(t.exports,t,t.exports,o),t.l=!0,t.exports}o.m=r,o.c=n,o.d=function(e,t,r){o.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},o.r=function(e){\"undefined\"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:\"Module\"}),Object.defineProperty(e,\"__esModule\",{value:!0})},o.t=function(t,e){if(1&e&&(t=o(t)),8&e)return t;if(4&e&&\"object\"==typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(o.r(r),Object.defineProperty(r,\"default\",{enumerable:!0,value:t}),2&e&&\"string\"!=typeof t)for(var n in t)o.d(r,n,function(e){return t[e]}.bind(null,n));return r},o.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return o.d(t,\"a\",t),t},o.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},o.p=\"\",o(o.s=0)}([function(e,t,r){\"use strict\";r.r(t);r(1)},function(e,t,r){!function(e){\"use strict\";e.createWorker(self,{allocate:function(e){var t=e.length,r=new ArrayBuffer(t);return{result:r,transferables:[r]}},deallocate:function(){return{result:void 0}}})}(r(2))},function(e,t,r){!function(e,t,g,l,h){\"use strict\";g=g&&g.hasOwnProperty(\"default\")?g.default:g,l=l&&l.hasOwnProperty(\"default\")?l.default:l;var r={INTERNAL_ERROR:-32603,INVALID_PARAMS:-32602,METHOD_NOT_FOUND:-32601},y=t.compile({message:'The requested method called \"${method}\" is not supported.',status:r.METHOD_NOT_FOUND}),w=t.compile({message:'The handler of the method called \"${method}\" returned no required result.',status:r.INTERNAL_ERROR}),x=t.compile({message:'The handler of the method called \"${method}\" returned an unexpected result.',status:r.INTERNAL_ERROR}),d=t.compile({message:'The specified parameter called \"portId\" with the given value \"${portId}\" does not identify a port connected to this worker.',status:r.INVALID_PARAMS}),p=function(){return new Promise(function(r){var e=new ArrayBuffer(0),t=new MessageChannel,n=t.port1,o=t.port2;n.onmessage=function(e){var t=e.data;return r(null!==t)},o.postMessage(e,[e])})},b=new Map;e.createWorker=function e(t,r){var n,v,m,o,i,a,u,c=2<arguments.length&&void 0!==arguments[2]?arguments[2]:function(){return!0},s=(o=e,i=r,a=c,Object.assign({},i,{connect:function(e){var t=e.port;t.start();var r=o(t,i),n=h.generateUniqueNumber(b);return b.set(n,function(){r(),t.close(),b.delete(n)}),{result:n}},disconnect:function(e){var t=e.portId,r=b.get(t);if(void 0===r)throw d({portId:t.toString()});return r(),{result:null}},isSupported:(u=l(g.mark(function e(){var t,r;return g.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,p();case 2:if(!e.sent){e.next=14;break}if((t=a())instanceof Promise)return e.next=8,t;e.next=11;break;case 8:e.t0=e.sent,e.next=12;break;case 11:e.t0=t;case 12:return r=e.t0,e.abrupt(\"return\",{result:r});case 14:return e.abrupt(\"return\",{result:!1});case 15:case\"end\":return e.stop()}},e,this)})),function(){return u.apply(this,arguments)})})),f=(v=t,m=s,n=l(g.mark(function e(t){var r,n,o,i,a,u,c,s,f,l,h,d,p;return g.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:if(r=t.data,n=r.id,o=r.method,i=r.params,a=m[o],e.prev=2,void 0===a)throw y({method:o});e.next=5;break;case 5:if(void 0===(u=void 0===i?a():a(i)))throw w({method:o});e.next=8;break;case 8:if(u instanceof Promise)return e.next=11,u;e.next=14;break;case 11:e.t0=e.sent,e.next=15;break;case 14:e.t0=u;case 15:if(c=e.t0,null!==n){e.next=21;break}if(void 0!==c.result)throw x({method:o});e.next=19;break;case 19:e.next=25;break;case 21:if(void 0===c.result)throw x({method:o});e.next=23;break;case 23:s=c.result,f=c.transferables,l=void 0===f?[]:f,v.postMessage({id:n,result:s},l);case 25:e.next=31;break;case 27:e.prev=27,e.t1=e.catch(2),h=e.t1.message,d=e.t1.status,p=void 0===d?-32603:d,v.postMessage({error:{code:p,message:h},id:n});case 31:case\"end\":return e.stop()}},e,this,[[2,27]])})),function(e){return n.apply(this,arguments)});return t.addEventListener(\"message\",f),function(){return t.removeEventListener(\"message\",f)}},e.isSupported=p,Object.defineProperty(e,\"__esModule\",{value:!0})}(t,r(3),r(10),r(13),r(14))},function(e,t,r){!function(e,s,o,i){\"use strict\";s=s&&s.hasOwnProperty(\"default\")?s.default:s,o=o&&o.hasOwnProperty(\"default\")?o.default:o,i=i&&i.hasOwnProperty(\"default\")?i.default:i;var f=function(e,t){return void 0===t?e:t.reduce(function(e,t){if(\"capitalize\"!==t)return\"dashify\"===t?o(e):\"prependIndefiniteArticle\"===t?\"\".concat(i(e),\" \").concat(e):e;var r=e.charAt(0).toUpperCase(),n=e.slice(1);return\"\".concat(r).concat(n)},e)},r=function(e,o){for(var t=/\\${([^.}]+)((\\.[^(]+\\(\\))*)}/g,r=[],n=t.exec(e);null!==n;){var i={modifiers:[],name:n[1]};if(void 0!==n[3])for(var a=/\\.[^(]+\\(\\)/g,u=a.exec(n[2]);null!==u;)i.modifiers.push(u[0].slice(1,-2)),u=a.exec(n[2]);r.push(i),n=t.exec(e)}var c=r.reduce(function(e,n){return e.map(function(e){return\"string\"==typeof e?e.split((t=n,r=t.name+t.modifiers.map(function(e){return\"\\\\.\".concat(e,\"\\\\(\\\\)\")}).join(\"\"),new RegExp(\"\\\\$\\\\{\".concat(r,\"}\"),\"g\"))).reduce(function(e,t,r){return 0===r?[t]:n.name in o?s(e).concat([f(o[n.name],n.modifiers),t]):s(e).concat([function(e){return f(e[n.name],n.modifiers)},t])},[]):[e];var t,r}).reduce(function(e,t){return s(e).concat(s(t))},[])},[e]);return function(r){return c.reduce(function(e,t){return\"string\"==typeof t?s(e).concat([t]):s(e).concat([t(r)])},[]).join(\"\")}};e.compile=function(a){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:{},u=void 0===a.code?void 0:r(a.code,e),c=void 0===a.message?void 0:r(a.message,e);function t(){var e=0<arguments.length&&void 0!==arguments[0]?arguments[0]:{},t=1<arguments.length?arguments[1]:void 0,r=void 0===t&&(e instanceof Error||void 0!==e.code&&\"Exception\"===e.code.slice(-9))?{cause:e,missingParameters:{}}:{cause:t,missingParameters:e},n=r.cause,o=r.missingParameters,i=void 0===c?new Error:new Error(c(o));return null!==n&&(i.cause=n),void 0!==u&&(i.code=u(o)),void 0!==a.status&&(i.status=a.status),i}return t},Object.defineProperty(e,\"__esModule\",{value:!0})}(t,r(4),r(8),r(9))},function(e,t,r){var n=r(5),o=r(6),i=r(7);e.exports=function(e){return n(e)||o(e)||i()}},function(e,t){e.exports=function(e){if(Array.isArray(e)){for(var t=0,r=new Array(e.length);t<e.length;t++)r[t]=e[t];return r}}},function(e,t){e.exports=function(e){if(Symbol.iterator in Object(e)||\"[object Arguments]\"===Object.prototype.toString.call(e))return Array.from(e)}},function(e,t){e.exports=function(){throw new TypeError(\"Invalid attempt to spread non-iterable instance\")}},function(e,t,r){\"use strict\";e.exports=function(e,t){if(\"string\"!=typeof e)throw new TypeError(\"expected a string\");return e.trim().replace(/([a-z])([A-Z])/g,\"$1-$2\").replace(/\\W/g,function(e){return/[\xC0-\u017E]/.test(e)?e:\"-\"}).replace(/^-+|-+$/g,\"\").replace(/-{2,}/g,function(e){return t&&t.condense?\"-\":e}).toLowerCase()}},function(e,t,r){var n=function(e){var t,r,n=/\\w+/.exec(e);if(!n)return\"an\";var o=(r=n[0]).toLowerCase(),i=[\"honest\",\"hour\",\"hono\"];for(t in i)if(0==o.indexOf(i[t]))return\"an\";if(1==o.length)return 0<=\"aedhilmnorsx\".indexOf(o)?\"an\":\"a\";if(r.match(/(?!FJO|[HLMNS]Y.|RY[EO]|SQU|(F[LR]?|[HL]|MN?|N|RH?|S[CHKLMNPTVW]?|X(YL)?)[AEIOU])[FHLMNRSX][A-Z]/))return\"an\";var a=[/^e[uw]/,/^onc?e\\b/,/^uni([^nmd]|mo)/,/^u[bcfhjkqrst][aeiou]/];for(t=0;t<a.length;t++)if(o.match(a[t]))return\"a\";return r.match(/^U[NK][AIEO]/)?\"a\":r==r.toUpperCase()?0<=\"aedhilmnorsx\".indexOf(o[0])?\"an\":\"a\":0<=\"aeiou\".indexOf(o[0])?\"an\":o.match(/^y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)/)?\"an\":\"a\"};void 0!==e.exports?e.exports=n:window.indefiniteArticle=n},function(e,t,r){e.exports=r(11)},function(e,t,r){var n=function(){return this||\"object\"==typeof self&&self}()||Function(\"return this\")(),o=n.regeneratorRuntime&&0<=Object.getOwnPropertyNames(n).indexOf(\"regeneratorRuntime\"),i=o&&n.regeneratorRuntime;if(n.regeneratorRuntime=void 0,e.exports=r(12),o)n.regeneratorRuntime=i;else try{delete n.regeneratorRuntime}catch(e){n.regeneratorRuntime=void 0}},function(M,e){!function(e){\"use strict\";var c,t=Object.prototype,s=t.hasOwnProperty,r=\"function\"==typeof Symbol?Symbol:{},o=r.iterator||\"@@iterator\",n=r.asyncIterator||\"@@asyncIterator\",i=r.toStringTag||\"@@toStringTag\",a=\"object\"==typeof M,u=e.regeneratorRuntime;if(u)a&&(M.exports=u);else{(u=e.regeneratorRuntime=a?M.exports:{}).wrap=w;var l=\"suspendedStart\",h=\"suspendedYield\",d=\"executing\",p=\"completed\",v={},f={};f[o]=function(){return this};var m=Object.getPrototypeOf,g=m&&m(m(k([])));g&&g!==t&&s.call(g,o)&&(f=g);var y=E.prototype=b.prototype=Object.create(f);O.prototype=y.constructor=E,E.constructor=O,E[i]=O.displayName=\"GeneratorFunction\",u.isGeneratorFunction=function(e){var t=\"function\"==typeof e&&e.constructor;return!!t&&(t===O||\"GeneratorFunction\"===(t.displayName||t.name))},u.mark=function(e){return Object.setPrototypeOf?Object.setPrototypeOf(e,E):(e.__proto__=E,i in e||(e[i]=\"GeneratorFunction\")),e.prototype=Object.create(y),e},u.awrap=function(e){return{__await:e}},L(_.prototype),_.prototype[n]=function(){return this},u.AsyncIterator=_,u.async=function(e,t,r,n){var o=new _(w(e,t,r,n));return u.isGeneratorFunction(t)?o:o.next().then(function(e){return e.done?e.value:o.next()})},L(y),y[i]=\"Generator\",y[o]=function(){return this},y.toString=function(){return\"[object Generator]\"},u.keys=function(r){var n=[];for(var e in r)n.push(e);return n.reverse(),function e(){for(;n.length;){var t=n.pop();if(t in r)return e.value=t,e.done=!1,e}return e.done=!0,e}},u.values=k,R.prototype={constructor:R,reset:function(e){if(this.prev=0,this.next=0,this.sent=this._sent=c,this.done=!1,this.delegate=null,this.method=\"next\",this.arg=c,this.tryEntries.forEach(j),!e)for(var t in this)\"t\"===t.charAt(0)&&s.call(this,t)&&!isNaN(+t.slice(1))&&(this[t]=c)},stop:function(){this.done=!0;var e=this.tryEntries[0].completion;if(\"throw\"===e.type)throw e.arg;return this.rval},dispatchException:function(r){if(this.done)throw r;var n=this;function e(e,t){return i.type=\"throw\",i.arg=r,n.next=e,t&&(n.method=\"next\",n.arg=c),!!t}for(var t=this.tryEntries.length-1;0<=t;--t){var o=this.tryEntries[t],i=o.completion;if(\"root\"===o.tryLoc)return e(\"end\");if(o.tryLoc<=this.prev){var a=s.call(o,\"catchLoc\"),u=s.call(o,\"finallyLoc\");if(a&&u){if(this.prev<o.catchLoc)return e(o.catchLoc,!0);if(this.prev<o.finallyLoc)return e(o.finallyLoc)}else if(a){if(this.prev<o.catchLoc)return e(o.catchLoc,!0)}else{if(!u)throw new Error(\"try statement without catch or finally\");if(this.prev<o.finallyLoc)return e(o.finallyLoc)}}}},abrupt:function(e,t){for(var r=this.tryEntries.length-1;0<=r;--r){var n=this.tryEntries[r];if(n.tryLoc<=this.prev&&s.call(n,\"finallyLoc\")&&this.prev<n.finallyLoc){var o=n;break}}o&&(\"break\"===e||\"continue\"===e)&&o.tryLoc<=t&&t<=o.finallyLoc&&(o=null);var i=o?o.completion:{};return i.type=e,i.arg=t,o?(this.method=\"next\",this.next=o.finallyLoc,v):this.complete(i)},complete:function(e,t){if(\"throw\"===e.type)throw e.arg;return\"break\"===e.type||\"continue\"===e.type?this.next=e.arg:\"return\"===e.type?(this.rval=this.arg=e.arg,this.method=\"return\",this.next=\"end\"):\"normal\"===e.type&&t&&(this.next=t),v},finish:function(e){for(var t=this.tryEntries.length-1;0<=t;--t){var r=this.tryEntries[t];if(r.finallyLoc===e)return this.complete(r.completion,r.afterLoc),j(r),v}},catch:function(e){for(var t=this.tryEntries.length-1;0<=t;--t){var r=this.tryEntries[t];if(r.tryLoc===e){var n=r.completion;if(\"throw\"===n.type){var o=n.arg;j(r)}return o}}throw new Error(\"illegal catch attempt\")},delegateYield:function(e,t,r){return this.delegate={iterator:k(e),resultName:t,nextLoc:r},\"next\"===this.method&&(this.arg=c),v}}}function w(e,t,r,n){var i,a,u,c,o=t&&t.prototype instanceof b?t:b,s=Object.create(o.prototype),f=new R(n||[]);return s._invoke=(i=e,a=r,u=f,c=l,function(e,t){if(c===d)throw new Error(\"Generator is already running\");if(c===p){if(\"throw\"===e)throw t;return A()}for(u.method=e,u.arg=t;;){var r=u.delegate;if(r){var n=N(r,u);if(n){if(n===v)continue;return n}}if(\"next\"===u.method)u.sent=u._sent=u.arg;else if(\"throw\"===u.method){if(c===l)throw c=p,u.arg;u.dispatchException(u.arg)}else\"return\"===u.method&&u.abrupt(\"return\",u.arg);c=d;var o=x(i,a,u);if(\"normal\"===o.type){if(c=u.done?p:h,o.arg===v)continue;return{value:o.arg,done:u.done}}\"throw\"===o.type&&(c=p,u.method=\"throw\",u.arg=o.arg)}}),s}function x(e,t,r){try{return{type:\"normal\",arg:e.call(t,r)}}catch(e){return{type:\"throw\",arg:e}}}function b(){}function O(){}function E(){}function L(e){[\"next\",\"throw\",\"return\"].forEach(function(t){e[t]=function(e){return this._invoke(t,e)}})}function _(c){var t;this._invoke=function(r,n){function e(){return new Promise(function(e,t){!function t(e,r,n,o){var i=x(c[e],c,r);if(\"throw\"!==i.type){var a=i.arg,u=a.value;return u&&\"object\"==typeof u&&s.call(u,\"__await\")?Promise.resolve(u.__await).then(function(e){t(\"next\",e,n,o)},function(e){t(\"throw\",e,n,o)}):Promise.resolve(u).then(function(e){a.value=e,n(a)},function(e){return t(\"throw\",e,n,o)})}o(i.arg)}(r,n,e,t)})}return t=t?t.then(e,e):e()}}function N(e,t){var r=e.iterator[t.method];if(r===c){if(t.delegate=null,\"throw\"===t.method){if(e.iterator.return&&(t.method=\"return\",t.arg=c,N(e,t),\"throw\"===t.method))return v;t.method=\"throw\",t.arg=new TypeError(\"The iterator does not provide a 'throw' method\")}return v}var n=x(r,e.iterator,t.arg);if(\"throw\"===n.type)return t.method=\"throw\",t.arg=n.arg,t.delegate=null,v;var o=n.arg;return o?o.done?(t[e.resultName]=o.value,t.next=e.nextLoc,\"return\"!==t.method&&(t.method=\"next\",t.arg=c),t.delegate=null,v):o:(t.method=\"throw\",t.arg=new TypeError(\"iterator result is not an object\"),t.delegate=null,v)}function P(e){var t={tryLoc:e[0]};1 in e&&(t.catchLoc=e[1]),2 in e&&(t.finallyLoc=e[2],t.afterLoc=e[3]),this.tryEntries.push(t)}function j(e){var t=e.completion||{};t.type=\"normal\",delete t.arg,e.completion=t}function R(e){this.tryEntries=[{tryLoc:\"root\"}],e.forEach(P,this),this.reset(!0)}function k(t){if(t){var e=t[o];if(e)return e.call(t);if(\"function\"==typeof t.next)return t;if(!isNaN(t.length)){var r=-1,n=function e(){for(;++r<t.length;)if(s.call(t,r))return e.value=t[r],e.done=!1,e;return e.value=c,e.done=!0,e};return n.next=n}}return{next:A}}function A(){return{value:c,done:!0}}}(function(){return this||\"object\"==typeof self&&self}()||Function(\"return this\")())},function(e,t){function c(e,t,r,n,o,i,a){try{var u=e[i](a),c=u.value}catch(e){return void r(e)}u.done?t(c):Promise.resolve(c).then(n,o)}e.exports=function(u){return function(){var e=this,a=arguments;return new Promise(function(t,r){var n=u.apply(e,a);function o(e){c(n,t,r,o,i,\"next\",e)}function i(e){c(n,t,r,o,i,\"throw\",e)}o(void 0)})}}},function(e,t,r){!function(e){\"use strict\";var n=new WeakMap,o=Number.MAX_SAFE_INTEGER||9007199254740991,i=function(e,t){return n.set(e,t),t},r=function(e){var t=n.get(e),r=void 0===t?e.size:2147483648<t?0:t+1;if(!e.has(r))return i(e,r);if(e.size<1073741824){for(;e.has(r);)r=Math.floor(2147483648*Math.random());return i(e,r)}if(e.size>o)throw new Error(\"Congratulations, you created a collection of unique numbers which uses all available integers!\");for(;e.has(r);)r=Math.floor(Math.random()*o);return i(e,r)};e.addUniqueNumber=function(e){var t=r(e);return e.add(t),t},e.generateUniqueNumber=r,Object.defineProperty(e,\"__esModule\",{value:!0})}(t)}]);";
 
 	var blob = new Blob([worker], {
 	  type: 'application/javascript; charset=utf-8'
@@ -8702,15 +8714,15 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 },{"async-array-buffer-broker":40}],42:[function(require,module,exports){
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('@babel/runtime/helpers/defineProperty'), require('@babel/runtime/helpers/slicedToArray'), require('fast-unique-numbers')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', '@babel/runtime/helpers/defineProperty', '@babel/runtime/helpers/slicedToArray', 'fast-unique-numbers'], factory) :
-    (factory((global.brokerFactory = {}),global._regeneratorRuntime,global._asyncToGenerator,global._defineProperty,global._slicedToArray,global.fastUniqueNumbers));
-}(this, (function (exports,_regeneratorRuntime,_asyncToGenerator,_defineProperty,_slicedToArray,fastUniqueNumbers) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/helpers/defineProperty'), require('@babel/runtime/helpers/slicedToArray'), require('fast-unique-numbers'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/helpers/defineProperty', '@babel/runtime/helpers/slicedToArray', 'fast-unique-numbers', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator'], factory) :
+    (factory((global.brokerFactory = {}),global._defineProperty,global._slicedToArray,global.fastUniqueNumbers,global._regeneratorRuntime,global._asyncToGenerator));
+}(this, (function (exports,_defineProperty,_slicedToArray,fastUniqueNumbers,_regeneratorRuntime,_asyncToGenerator) { 'use strict';
 
-    _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
-    _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
     _defineProperty = _defineProperty && _defineProperty.hasOwnProperty('default') ? _defineProperty['default'] : _defineProperty;
     _slicedToArray = _slicedToArray && _slicedToArray.hasOwnProperty('default') ? _slicedToArray['default'] : _slicedToArray;
+    _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
+    _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
 
     var isMessagePort = function isMessagePort(sender) {
       return typeof sender.start === 'function';
@@ -9745,19 +9757,19 @@ if (hadRuntime) {
 
 },{}],46:[function(require,module,exports){
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/helpers/typeof'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits'), require('@babel/runtime/helpers/toConsumableArray'), require('@babel/runtime/helpers/slicedToArray'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('@babel/runtime/helpers/assertThisInitialized'), require('@babel/runtime/helpers/defineProperty'), require('async-array-buffer'), require('tslib')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/helpers/typeof', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits', '@babel/runtime/helpers/toConsumableArray', '@babel/runtime/helpers/slicedToArray', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', '@babel/runtime/helpers/assertThisInitialized', '@babel/runtime/helpers/defineProperty', 'async-array-buffer', 'tslib'], factory) :
-    (factory((global.standardizedAudioContext = {}),global._typeof,global._classCallCheck,global._createClass,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits,global._toConsumableArray,global._slicedToArray,global._regeneratorRuntime,global._asyncToGenerator,global._assertThisInitialized,global._defineProperty,global.asyncArrayBuffer,global.tslib_1));
-}(this, (function (exports,_typeof,_classCallCheck,_createClass,_possibleConstructorReturn,_getPrototypeOf,_inherits,_toConsumableArray,_slicedToArray,_regeneratorRuntime,_asyncToGenerator,_assertThisInitialized,_defineProperty,asyncArrayBuffer,tslib_1) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/helpers/typeof'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/slicedToArray'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits'), require('@babel/runtime/helpers/toConsumableArray'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('@babel/runtime/helpers/assertThisInitialized'), require('@babel/runtime/helpers/defineProperty'), require('async-array-buffer'), require('tslib')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/helpers/typeof', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/slicedToArray', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits', '@babel/runtime/helpers/toConsumableArray', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', '@babel/runtime/helpers/assertThisInitialized', '@babel/runtime/helpers/defineProperty', 'async-array-buffer', 'tslib'], factory) :
+    (factory((global.standardizedAudioContext = {}),global._typeof,global._classCallCheck,global._slicedToArray,global._createClass,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits,global._toConsumableArray,global._regeneratorRuntime,global._asyncToGenerator,global._assertThisInitialized,global._defineProperty,global.asyncArrayBuffer,global.tslib_1));
+}(this, (function (exports,_typeof,_classCallCheck,_slicedToArray,_createClass,_possibleConstructorReturn,_getPrototypeOf,_inherits,_toConsumableArray,_regeneratorRuntime,_asyncToGenerator,_assertThisInitialized,_defineProperty,asyncArrayBuffer,tslib_1) { 'use strict';
 
     _typeof = _typeof && _typeof.hasOwnProperty('default') ? _typeof['default'] : _typeof;
     _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
+    _slicedToArray = _slicedToArray && _slicedToArray.hasOwnProperty('default') ? _slicedToArray['default'] : _slicedToArray;
     _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
     _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
     _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
     _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
     _toConsumableArray = _toConsumableArray && _toConsumableArray.hasOwnProperty('default') ? _toConsumableArray['default'] : _toConsumableArray;
-    _slicedToArray = _slicedToArray && _slicedToArray.hasOwnProperty('default') ? _slicedToArray['default'] : _slicedToArray;
     _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
     _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
     _assertThisInitialized = _assertThisInitialized && _assertThisInitialized.hasOwnProperty('default') ? _assertThisInitialized['default'] : _assertThisInitialized;
@@ -10052,6 +10064,56 @@ if (hadRuntime) {
     var NODE_TO_PROCESSOR_MAPS = new WeakMap();
     var TEST_RESULTS = new WeakMap();
 
+    var evaluateSource = function evaluateSource(source) {
+      return new Promise(function (resolve, reject) {
+        var head = document.head;
+
+        if (head === null) {
+          reject(new SyntaxError());
+        } else {
+          var script = document.createElement('script'); // @todo Safari doesn't like URLs with a type of 'application/javascript; charset=utf-8'.
+
+          var blob = new Blob([source], {
+            type: 'application/javascript'
+          });
+          var url = URL.createObjectURL(blob);
+          var originalOnErrorHandler = window.onerror;
+
+          var removeErrorEventListenerAndRevokeUrl = function removeErrorEventListenerAndRevokeUrl() {
+            window.onerror = originalOnErrorHandler;
+            URL.revokeObjectURL(url);
+          };
+
+          window.onerror = function (message, src, lineno, colno, error) {
+            // @todo Edge thinks the source is the one of the html document.
+            if (src === url || src === location.href && lineno === 1 && colno === 1) {
+              removeErrorEventListenerAndRevokeUrl();
+              reject(error);
+              return false;
+            }
+
+            if (originalOnErrorHandler !== null) {
+              return originalOnErrorHandler(message, src, lineno, colno, error);
+            }
+          };
+
+          script.onerror = function () {
+            removeErrorEventListenerAndRevokeUrl();
+            reject(new SyntaxError());
+          };
+
+          script.onload = function () {
+            removeErrorEventListenerAndRevokeUrl();
+            resolve();
+          };
+
+          script.src = url;
+          script.type = 'module';
+          head.appendChild(script);
+        }
+      });
+    };
+
     var createInvalidStateError = function createInvalidStateError() {
       try {
         return new DOMException('', 'InvalidStateError');
@@ -10088,6 +10150,36 @@ if (hadRuntime) {
       return true;
     };
 
+    /*
+     * This massive regex tries to cover all the following cases.
+     *
+     * import './path';
+     * import defaultImport from './path';
+     * import { namedImport } from './path';
+     * import { namedImport as renamendImport } from './path';
+     * import * as namespaceImport from './path';
+     * import defaultImport, { namedImport } from './path';
+     * import defaultImport, { namedImport as renamendImport } from './path';
+     * import defaultImport, * as namespaceImport from './path';
+     */
+    var IMPORT_STATEMENT_REGEX = /^import(?:(?:[\s]+[\w]+|(?:[\s]+[\w]+[\s]*,)?[\s]*\{[\s]*[\w]+(?:[\s]+as[\s]+[\w]+)?(?:[\s]*,[\s]*[\w]+(?:[\s]+as[\s]+[\w]+)?)*[\s]*}|(?:[\s]+[\w]+[\s]*,)?[\s]*\*[\s]+as[\s]+[\w]+)[\s]+from)?(?:[\s]*)("([^"\\]|\\.)+"|'([^'\\]|\\.)+')(?:[\s]*);?/; // tslint:disable-line:max-line-length
+
+    var splitImportStatements = function splitImportStatements(source, url) {
+      var importStatements = [];
+      var sourceWithoutImportStatements = source.replace(/^[\s]+/, '');
+      var result = sourceWithoutImportStatements.match(IMPORT_STATEMENT_REGEX);
+
+      while (result !== null) {
+        var unresolvedUrl = result[1].slice(1, -1);
+        var importStatementWithResolvedUrl = result[0].replace(/([\s]+)?;?$/, '').replace(unresolvedUrl, new URL(unresolvedUrl, url).toString());
+        importStatements.push(importStatementWithResolvedUrl);
+        sourceWithoutImportStatements = sourceWithoutImportStatements.slice(result[0].length).replace(/^[\s]+/, '');
+        result = sourceWithoutImportStatements.match(IMPORT_STATEMENT_REGEX);
+      }
+
+      return [importStatements.join(';'), sourceWithoutImportStatements];
+    };
+
     var verifyParameterDescriptors = function verifyParameterDescriptors(parameterDescriptors) {
       if (parameterDescriptors !== undefined && !Array.isArray(parameterDescriptors)) {
         throw new TypeError('The parameterDescriptors property of given value for processorCtor is not an array.');
@@ -10110,29 +10202,29 @@ if (hadRuntime) {
 
     var ongoingRequests = new WeakMap();
     var resolvedRequests = new WeakMap();
-    var createAddAudioWorkletModule = function createAddAudioWorkletModule(createAbortError, createNotSupportedError, getBackupNativeContext) {
+    var createAddAudioWorkletModule = function createAddAudioWorkletModule(createAbortError, createNotSupportedError, fetchSource, getBackupNativeContext) {
       return function (context, moduleURL) {
         var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
           credentials: 'omit'
         };
-        var nativeContext = getNativeContext(context); // Bug #59: Only Chrome & Opera do implement the audioWorklet property.
+        var nativeContext = getNativeContext(context);
+        var absoluteUrl = new URL(moduleURL, location.href).toString(); // Bug #59: Only Chrome & Opera do implement the audioWorklet property.
         // @todo Define the native interface as part of the native AudioContext.
 
         if (nativeContext.audioWorklet !== undefined) {
-          return fetch(moduleURL).then(function (response) {
-            if (response.ok) {
-              return response.text();
-            }
-
-            throw createAbortError();
-          }).then(function (source) {
+          return fetchSource(moduleURL).then(function (source) {
+            var _splitImportStatement = splitImportStatements(source, absoluteUrl),
+                _splitImportStatement2 = _slicedToArray(_splitImportStatement, 2),
+                importStatements = _splitImportStatement2[0],
+                sourceWithoutImportStatements = _splitImportStatement2[1];
             /*
              * Bug #86: Chrome Canary does not invoke the process() function if the corresponding AudioWorkletNode has no output.
              *
              * This is the unminified version of the code used below:
              *
              * ```js
-             * `((registerProcessor) => {${ source }
+             * `${ importStatements };
+             * ((registerProcessor) => {${ sourceWithoutImportStatements }
              * })((name, processorCtor) => registerProcessor(name, class extends processorCtor {
              *
              *     constructor (options) {
@@ -10156,7 +10248,9 @@ if (hadRuntime) {
              * }))`
              * ```
              */
-            var wrappedSource = "(registerProcessor=>{".concat(source, "\n})((n,p)=>registerProcessor(n,class extends p{constructor(o){const{hasNoOutput,...q}=o.parameterData;if(hasNoOutput===1){super({...o,numberOfOutputs:0,outputChannelCount:[],parameterData:q});this._h=true}else{super(o);this._h=false}}process(i,o,p){return super.process(i,(this._h)?[]:o,p)}}))"); // tslint:disable-line:max-line-length
+
+
+            var wrappedSource = "".concat(importStatements, ";(registerProcessor=>{").concat(sourceWithoutImportStatements, "\n})((n,p)=>registerProcessor(n,class extends p{constructor(o){const{hasNoOutput,...q}=o.parameterData;if(hasNoOutput===1){super({...o,numberOfOutputs:0,outputChannelCount:[],parameterData:q});this._h=true}else{super(o);this._h=false}}process(i,o,p){return super.process(i,(this._h)?[]:o,p)}}))"); // tslint:disable-line:max-line-length
 
             var blob = new Blob([wrappedSource], {
               type: 'application/javascript; charset=utf-8'
@@ -10166,6 +10260,10 @@ if (hadRuntime) {
             var nativeContextOrBackupNativeContext = backupNativeContext !== null ? backupNativeContext : nativeContext;
             return nativeContextOrBackupNativeContext.audioWorklet.addModule(url, options).then(function () {
               return URL.revokeObjectURL(url);
+            }) // @todo This could be written more elegantly when Promise.finally() becomes avalaible.
+            .catch(function (err) {
+              URL.revokeObjectURL(url);
+              throw err; // tslint:disable-line:rxjs-throw-error
             });
           });
         } else {
@@ -10185,14 +10283,32 @@ if (hadRuntime) {
             }
           }
 
-          var promise = fetch(moduleURL).then(function (response) {
-            if (response.ok) {
-              return response.text();
-            }
+          var promise = fetchSource(moduleURL).then(function (source) {
+            var _splitImportStatement3 = splitImportStatements(source, absoluteUrl),
+                _splitImportStatement4 = _slicedToArray(_splitImportStatement3, 2),
+                importStatements = _splitImportStatement4[0],
+                sourceWithoutImportStatements = _splitImportStatement4[1];
+            /*
+             * This is the unminified version of the code used below:
+             *
+             * ```js
+             * ${ importStatements };
+             * ((a, b) => {
+             *     (a[b] = a[b] || [ ]).push(
+             *         (AudioWorkletProcessor, currentFrame, currentTime, global, egisterProcessor, sampleRate, self, window) => {
+             *             ${ sourceWithoutImportStatements }
+             *         }
+             *     );
+             * })(window, '_AWGS');
+             * ```
+             */
+            // tslint:disable-next-line:max-line-length
 
-            throw createAbortError();
-          }).then(function (source) {
-            var fn = new Function('AudioWorkletProcessor', 'currentFrame', 'currentTime', 'global', 'registerProcessor', 'sampleRate', 'self', 'window', source);
+
+            var wrappedSource = "".concat(importStatements, ";((a,b)=>{(a[b]=a[b]||[]).push((AudioWorkletProcessor,currentFrame,currentTime,global,registerProcessor,sampleRate,self,window)=>{").concat(sourceWithoutImportStatements, "\n})})(window,'_AWGS')"); // @todo Evaluating the given source code is a possible security problem.
+
+            return evaluateSource(wrappedSource);
+          }).then(function () {
             var globalScope = Object.create(null, {
               currentFrame: {
                 get: function get() {
@@ -10209,9 +10325,15 @@ if (hadRuntime) {
                   return nativeContext.sampleRate;
                 }
               }
-            }); // @todo Evaluating the given source code is a possible security problem.
+            });
 
-            fn(function AudioWorkletProcessor() {
+            var evaluateAudioWorkletGlobalScope = window._AWGS.pop();
+
+            if (evaluateAudioWorkletGlobalScope === undefined) {
+              throw new SyntaxError();
+            }
+
+            evaluateAudioWorkletGlobalScope(function AudioWorkletProcessor() {
               _classCallCheck(this, AudioWorkletProcessor);
             }, globalScope.currentFrame, globalScope.currentTime, undefined, function (name, processorCtor) {
               if (name.trim() === '') {
@@ -13277,6 +13399,58 @@ if (hadRuntime) {
       }
     };
 
+    var createFetchSource = function createFetchSource(createAbortError) {
+      return (
+        /*#__PURE__*/
+        function () {
+          var _ref = _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee(url) {
+            var response;
+            return _regeneratorRuntime.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.prev = 0;
+                    _context.next = 3;
+                    return fetch(url);
+
+                  case 3:
+                    response = _context.sent;
+
+                    if (!response.ok) {
+                      _context.next = 6;
+                      break;
+                    }
+
+                    return _context.abrupt("return", response.text());
+
+                  case 6:
+                    _context.next = 10;
+                    break;
+
+                  case 8:
+                    _context.prev = 8;
+                    _context.t0 = _context["catch"](0);
+
+                  case 10:
+                    throw createAbortError();
+
+                  case 11:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee, this, [[0, 8]]);
+          }));
+
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        }()
+      );
+    };
+
     var DEFAULT_OPTIONS$8 = {
       channelCount: 2,
       channelCountMode: 'max',
@@ -14683,7 +14857,7 @@ if (hadRuntime) {
         var onprocessorerror = null; // Bug #87: Expose at least one output to make this node connectable.
 
         var outputAudioNodes = options.numberOfOutputs === 0 ? [scriptProcessorNode] : outputChannelMergerNodes;
-        var faker = {
+        var nativeAudioWorkletNodeFaker = {
           get bufferSize() {
             return bufferSize;
           },
@@ -14771,7 +14945,7 @@ if (hadRuntime) {
         };
         processorDefinition.prototype.port = messageChannel.port1;
         var audioWorkletProcessor = null;
-        var audioWorkletProcessorPromise = createAudioWorkletProcessor(nativeContext, faker, processorDefinition, options);
+        var audioWorkletProcessorPromise = createAudioWorkletProcessor(nativeContext, nativeAudioWorkletNodeFaker, processorDefinition, options);
         audioWorkletProcessorPromise.then(function (dWrkltPrcssr) {
           return audioWorkletProcessor = dWrkltPrcssr;
         });
@@ -14807,7 +14981,7 @@ if (hadRuntime) {
               }
 
               try {
-                var audioNodeConnections = getAudioNodeConnections(faker);
+                var audioNodeConnections = getAudioNodeConnections(nativeAudioWorkletNodeFaker);
                 var potentiallyEmptyInputs = inputs.map(function (input, index) {
                   if (audioNodeConnections.inputs[index].size === 0) {
                     return [];
@@ -14849,7 +15023,7 @@ if (hadRuntime) {
           }
         };
 
-        return faker;
+        return nativeAudioWorkletNodeFaker;
       };
     };
 
@@ -15024,6 +15198,28 @@ if (hadRuntime) {
       };
     };
 
+    var interceptConnections = function interceptConnections(original, interceptor) {
+      original.connect = function (destination) {
+        var output = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+        var input = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+        if (destination instanceof AudioNode) {
+          interceptor.connect.call(interceptor, destination, output, input); // Bug #11: Safari does not support chaining yet.
+
+          return destination;
+        } // @todo This return statement is necessary to satisfy TypeScript.
+
+
+        return interceptor.connect.call(interceptor, destination, output);
+      };
+
+      original.disconnect = function () {
+        interceptor.disconnect.apply(interceptor, arguments);
+      };
+
+      return original;
+    };
+
     var createNativeConstantSourceNodeFakerFactory = function createNativeConstantSourceNodeFakerFactory(createNativeAudioBufferSourceNode, createNativeGainNode) {
       return function (nativeContext, _a) {
         var offset = _a.offset,
@@ -15048,7 +15244,7 @@ if (hadRuntime) {
         audioBufferSourceNode.buffer = audioBuffer;
         audioBufferSourceNode.loop = true;
         audioBufferSourceNode.connect(gainNode);
-        return {
+        var nativeConstantSourceNodeFaker = {
           get bufferSize() {
             return undefined;
           },
@@ -15108,16 +15304,6 @@ if (hadRuntime) {
           addEventListener: function addEventListener() {
             return audioBufferSourceNode.addEventListener(arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
           },
-          connect: function connect() {
-            if ((arguments.length <= 2 ? undefined : arguments[2]) === undefined) {
-              return gainNode.connect.call(gainNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1]);
-            }
-
-            return gainNode.connect.call(gainNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
-          },
-          disconnect: function disconnect() {
-            return gainNode.disconnect.call(gainNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
-          },
           dispatchEvent: function dispatchEvent() {
             return audioBufferSourceNode.dispatchEvent(arguments.length <= 0 ? undefined : arguments[0]);
           },
@@ -15133,6 +15319,7 @@ if (hadRuntime) {
             audioBufferSourceNode.stop.call(audioBufferSourceNode, when);
           }
         };
+        return interceptConnections(nativeConstantSourceNodeFaker, gainNode);
       };
     };
 
@@ -15257,7 +15444,7 @@ if (hadRuntime) {
         };
 
         var nyquist = nativeContext.sampleRate / 2;
-        return {
+        var nativeIIRFilterNodeFaker = {
           get bufferSize() {
             return bufferSize;
           },
@@ -15306,16 +15493,6 @@ if (hadRuntime) {
             // @todo Dissallow adding an audioprocess listener.
             return scriptProcessorNode.addEventListener(arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
           },
-          connect: function connect() {
-            if ((arguments.length <= 2 ? undefined : arguments[2]) === undefined) {
-              return scriptProcessorNode.connect.call(scriptProcessorNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1]);
-            }
-
-            return scriptProcessorNode.connect.call(scriptProcessorNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
-          },
-          disconnect: function disconnect() {
-            return scriptProcessorNode.disconnect.call(scriptProcessorNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
-          },
           dispatchEvent: function dispatchEvent() {
             return scriptProcessorNode.dispatchEvent(arguments.length <= 0 ? undefined : arguments[0]);
           },
@@ -15340,6 +15517,7 @@ if (hadRuntime) {
             return scriptProcessorNode.removeEventListener(arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
           }
         };
+        return interceptConnections(nativeIIRFilterNodeFaker, scriptProcessorNode);
       };
     };
 
@@ -15650,7 +15828,7 @@ if (hadRuntime) {
             }
           }
         });
-        return {
+        var nativeStereoPannerNodeFakerFactory = {
           get bufferSize() {
             return undefined;
           },
@@ -15714,16 +15892,6 @@ if (hadRuntime) {
           addEventListener: function addEventListener() {
             return inputGainNode.addEventListener(arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
           },
-          connect: function connect() {
-            if ((arguments.length <= 2 ? undefined : arguments[2]) === undefined) {
-              return channelMergerNode.connect.call(channelMergerNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1]);
-            }
-
-            return channelMergerNode.connect.call(channelMergerNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
-          },
-          disconnect: function disconnect() {
-            return channelMergerNode.disconnect.call(channelMergerNode, arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
-          },
           dispatchEvent: function dispatchEvent() {
             return inputGainNode.dispatchEvent(arguments.length <= 0 ? undefined : arguments[0]);
           },
@@ -15731,6 +15899,7 @@ if (hadRuntime) {
             return inputGainNode.removeEventListener(arguments.length <= 0 ? undefined : arguments[0], arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2]);
           }
         };
+        return interceptConnections(nativeStereoPannerNodeFakerFactory, channelMergerNode);
       };
     };
 
@@ -16733,24 +16902,7 @@ if (hadRuntime) {
         }(nativeAudioScheduledSourceNode.disconnect);
 
         nativeAudioScheduledSourceNode.addEventListener('ended', disconnectGainNode);
-
-        nativeAudioScheduledSourceNode.connect = function (destination) {
-          var output = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-          var input = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-          if (destination instanceof AudioNode) {
-            nativeGainNode.connect.call(nativeGainNode, destination, output, input); // Bug #11: Safari does not support chaining yet.
-
-            return destination;
-          } // @todo This return statement is necessary to satisfy TypeScript.
-
-
-          return nativeGainNode.connect.call(nativeGainNode, destination, output);
-        };
-
-        nativeAudioScheduledSourceNode.disconnect = function () {
-          nativeGainNode.disconnect.apply(nativeGainNode, arguments);
-        };
+        interceptConnections(nativeAudioScheduledSourceNode, nativeGainNode);
 
         nativeAudioScheduledSourceNode.stop = function (stop) {
           var isStopped = false;
@@ -16820,24 +16972,7 @@ if (hadRuntime) {
         }(nativeConstantSourceNode.disconnect);
 
         nativeConstantSourceNode.addEventListener('ended', disconnectGainNode);
-
-        nativeConstantSourceNode.connect = function (destination) {
-          var output = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-          var input = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-          if (destination instanceof AudioNode) {
-            // Bug #11: Safari does not support chaining yet, but that wrapper should not be used in Safari.
-            return nativeGainNode.connect.call(nativeGainNode, destination, output, input);
-          } // @todo This return statement is necessary to satisfy TypeScript.
-
-
-          return nativeGainNode.connect.call(nativeGainNode, destination, output);
-        };
-
-        nativeConstantSourceNode.disconnect = function () {
-          nativeGainNode.disconnect.apply(nativeGainNode, arguments);
-        };
-
+        interceptConnections(nativeConstantSourceNode, nativeGainNode);
         var startTime = 0;
         var stopTime = null;
 
@@ -16934,7 +17069,7 @@ if (hadRuntime) {
     var waveShaperNodeConstructor = createWaveShaperNodeConstructor(createInvalidStateError, createNativeWaveShaperNode, createWaveShaperNodeRenderer, isNativeOfflineAudioContext, noneAudioDestinationNodeConstructor);
     var isSecureContext = createIsSecureContext(window$1); // The addAudioWorkletModule() function is only available in a SecureContext.
 
-    var addAudioWorkletModule = isSecureContext ? createAddAudioWorkletModule(createAbortError, createNotSupportedError, getBackupNativeContext) : undefined;
+    var addAudioWorkletModule = isSecureContext ? createAddAudioWorkletModule(createAbortError, createNotSupportedError, createFetchSource(createAbortError), getBackupNativeContext) : undefined;
     var decodeAudioData = createDecodeAudioData(createDataCloneError, createEncodingError, nativeOfflineAudioContextConstructor, isNativeOfflineAudioContext, testAudioBufferCopyChannelMethodsSubarraySupport, testPromiseSupport);
     var baseAudioContextConstructor = createBaseAudioContextConstructor(addAudioWorkletModule, analyserNodeConstructor, audioBufferConstructor, audioBufferSourceNodeConstructor, biquadFilterNodeConstructor, channelMergerNodeConstructor, channelSplitterNodeConstructor, constantSourceNodeConstructor, decodeAudioData, gainNodeConstructor, iIRFilterNodeConstructor, minimalBaseAudioContextConstructor, oscillatorNodeConstructor, stereoPannerNodeConstructor, waveShaperNodeConstructor);
     var createNativeMediaElementAudioSourceNode = createNativeMediaElementAudioSourceNodeFactory(createNativeAudioNode);
