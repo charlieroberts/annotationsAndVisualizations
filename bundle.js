@@ -570,8 +570,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
   })
 
   patternObject.clear = () => {
-    if( marker !== undefined )
-      marker.clear()
+    track.markup.textMarkers.string = cm.markText( nodePosStart, nodePosEnd, { className:'euclid' })
     patternObject.reset()
   }
 
