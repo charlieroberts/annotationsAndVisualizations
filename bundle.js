@@ -815,6 +815,8 @@ module.exports = ( patternObject, marker, className, cm ) => {
     } catch( e ) {} // yes, I just did that XXX 
   }
 
+  Gibber.subscribe( 'clear', patternObject.clear )
+
   return update
 }
 
