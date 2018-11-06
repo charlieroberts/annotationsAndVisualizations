@@ -30,7 +30,8 @@
         font-family:Menlo, monospace;
         font-size:.8em;
         background:rgba(46,50,53,1);
-        color:rgb( 153 ) !important
+        color:rgb( 153 ) !important;
+        border: 1px solid #aaa;
       }
 
       span.cm-comment { color:rgb(121,121,121) !important }
@@ -82,6 +83,11 @@
 
       p, ol, ul { max-width: 60rem }
 
+      body { 
+        background-color:rgba(46,50,53,1);;
+        color:#ddd;
+      }
+
     </style>
 	</head>
 	<body>
@@ -98,22 +104,22 @@
           charlie@charlie-roberts.com
           </p>
 
-          <p><em>last edited:11/04/2018</em></p>
+          <p><em>last edited:11/05/2018</em></p>
 				</section>
 			</nav>
 
       <section class='container'>
         <h3>Abstract</h3>
-        <p>In this web essay we present research on dynamically injecting realtime annotations and visualizations into a programming environment for live coding performance. The techniques we describe enable both performers and audiences to gain greater insight into discrete events, continuous signals, and the algorithmic transformation of musical pattern. We catalog our techniques and encourage readers to interactively experiment with each of them, and conclude by describing challenges and future directions for our research.</p>
+        <p>In this web essay I present research on dynamically injecting realtime annotations and visualizations into a programming environment for live coding performance. The techniques I describe enable both performers and audiences to gain greater insight into discrete events, continuous signals, and the algorithmic transformation of musical pattern. I catalog these techniques and encourage readers to interactively experiment with each of them, and conclude by describing challenges and future directions for this line of research.</p>
       </section>
 
 			<section class="container code" id="Introduction">
         <p><em>NOTE: The examples in this essay currently only work in Chrome. I'm working on it!</em></p>
 
 				<h3 class="title">Introduction</h3>
-        <p>This web essay will explore the addition of annotations and visualizations to custom-developed programming environments for <a href="http://toplap.org/about">live coding performance</a>; in this essay we will use the term 'live coding' to refer to the digital arts practice, as opposed to live programming more generally.  We provide a catalogue of techniques we've developed to help reveal algorithmic activity to both audience members and programmer/performers. These techniques are implemented in standard JavaScript, which is also the end-user language; however, many are generalizable and some have drawn inspiration from features found in programming environments for other languages. The code examples below are <em>live</em>; feel free to make minor edits and view / listen to the resulting changes. In addition to pressing the 'Play' button, which selects all code in a given example and runs it, you can also highlight code you'd like to execute and hit Ctrl+Enter.</p>
+        <p>This web essay will explore the addition of annotations and visualizations to custom-developed programming environments for <a href="http://toplap.org/about">live coding performance</a>; in this essay I will use the term 'live coding' to refer to the digital arts practice, as opposed to live programming more generally.  I provide a catalogue of techniques I've developed to help reveal algorithmic activity to both audience members and programmer/performers. These techniques are implemented in standard JavaScript, which is also the end-user language; however, many are generalizable and some have drawn inspiration from features found in programming environments for other languages. The code examples below are <em>live</em>; feel free to make minor edits and view / listen to the resulting changes. In addition to pressing the 'Play' button, which selects all code in a given example and runs it, you can also highlight code you'd like to execute and hit Ctrl+Enter.</p>
 
-        <p>Before diving in, we'd like to provide an example of what many of these annotations look like when combined. Although they might be somewhat overwhelming when simultaneously viewed, in our experience they can provide valuable scaffolding to the development of a program as it is written over time.</p>
+        <p>Before diving in, I'd like to provide an example of what many of these annotations look like when combined. Although they might be somewhat overwhelming when simultaneously viewed, in my experience they can provide valuable scaffolding to the development of a program as it is written over time.</p>
 
 
         <div id='full' class='example'>
@@ -150,17 +156,17 @@ notesPattern.gain[0].values.set.seq( [[7,7,7,7],[16,14,12,10]], 8 )
       
 			<section class="container" id="Motivation">
 				<h3 class="title">Motivation</h3>
-        <p>The initial motivation for this research was to improve audience understanding of live coding performances, where source code is written on stage and often projected for the audience to follow. However, over time the feedback provided by the annotations and visualizations described also became important to my personal performance practice [<a href="http://https://www.tandfonline.com/doi/abs/10.1080/14794713.2016.1227602?journalCode=rpdm20">7</a>]. The feedback provides important indications of activity, and a quick way to visually confirm that algorithms are proceeding as intended. A survey we conducted with over a hundred live coders and computer scientists indicated a high level of interest in the types of annotations presented here [<a href="http://www.charlie-roberts.com/pubs/gibber.annotations.pdf" target=_blank>1</a>].</p>
+        <p>The initial motivation for this research was to improve audience understanding of live coding performances, where source code is written on stage and often projected for the audience to follow. However, over time the feedback provided by the annotations and visualizations described also became important to my personal performance practice [<a href="http://https://www.tandfonline.com/doi/abs/10.1080/14794713.2016.1227602?journalCode=rpdm20">7</a>]. The feedback provides important indications of activity, and a quick way to visually confirm that algorithms are proceeding as intended. A survey I conducted with over a hundred live coders and computer scientists indicated a high level of interest in the types of annotations presented here [<a href="http://www.charlie-roberts.com/pubs/gibber.annotations.pdf" target=_blank>1</a>].</p>
 
-        <p>Although parts of this research have been previously presented to the digital arts community, our goal in describing it here is to obtain feedback from a broader community of computer scientists with interests in the psychology of programming and in novel techniques for interactive programming environments. There are also a number of new techniques that are being presented in this essay for the first time. Finally, we feel that the web essay format is fundamentally the best vehicle for presenting this research, as the animated/temporal characteristics of the annotations and visualizations are difficult to convey in static text and images, such as in the papers we have previously published on the subject.</p>
+        <p>Although parts of this research have been previously presented to the digital arts community, my goal in describing it to the LIVE community is to obtain feedback from a broader community of computer scientists with interests in the psychology of programming and in novel techniques for interactive programming environments. There are also a number of new techniques presented in this essay for the first time. Finally, I believe that the web essay format is fundamentally the best vehicle for presenting this research, as the animated/temporal characteristics of the annotations and visualizations are difficult to convey in static text and images, such as in the papers I have previously published on the subject.</p>
 
-        <p>Outside of informal, high-level descriptions, we do not explain the code or APIs used in the examples. The focus is instead on how algorithms are annotated / visualized, and we provide only the minimal explanation necessary to understand our design decisions in this regard. While our research to date has focused on implementation and evaluation in the context of our personal artistic practice, we look forward to more formal user evaluations in the future, and are particuarly interested in implications for teaching computational media.</p> 
+        <p>Outside of informal, high-level descriptions, I do not explain the code or APIs used in the examples. The focus is instead on how algorithms are annotated / visualized, and I provide only the minimal explanation necessary to understand our design decisions in this regard. While my research to date has focused on implementation and evaluation in the context of our personal artistic practice, I look forward to more formal user evaluations in the future, and are particuarly interested in implications for teaching computational media.</p> 
 			</section>
 
 
       <section class="container" id="Principles">
       <h3 class="title">Guiding principles</h3>
-      <p>There are three principles that guide the design of our annotations and visualizations.</p>
+      <p>There are three principles that guide the design of the presented annotations and visualizations.</p>
 
       <ol>
         <li>If a value changes over time (typically related to musical progression or signal processing), display its current state, either by adding a visualization / annotation  or by modifying the source code to reflect the current value.</li>
@@ -168,20 +174,20 @@ notesPattern.gain[0].values.set.seq( [[7,7,7,7],[16,14,12,10]], 8 )
         <li>In addition to displaying when values change, whenever possible also provide some indication of when a value is being <em>read</em>, in particular when there is a direct affect on musical / sonic output.
       </ol>
 
-      <p>Our first principle is fundamentally constrained by screen real estate; therefore, we display the current state of variables found in code that is within the editing environment's current viewport. However, this is still very different from environments where time-varying variables must be explicitly 'watched' by the programmer. By displaying all updates concurrently, we enable audience members to choose the algorithms they'd like to watch develop, and minimize the time programmer/performers must spend on user interactions for viewing state.</p>
+      <p>The first principle is fundamentally constrained by screen real estate; therefore, only the current state of variables found in code within the editing environment's current viewport is actively displayed. However, this is still very different from environments where time-varying variables must be explicitly 'watched' by the programmer. By displaying all updates concurrently, audience members can choose the algorithms they'd like to watch develop, and the time programmer/performers must spend on user interactions for viewing state is minimized.</p>
 
-      <p>In regards to the second principle, we are again constrained by the types of data that can be easily represented inside of an editing environment. It is easy to display short sequences of musical data outputted by a generative algorithm inside of the editor; it is more difficult to display sequences that are thousands of values in length. While it is easy to imagine use cases where longer sequences would be musically useful, in our environment's typical use shorter sequences are more common.</p>
+      <p>In regards to the second principle, the types of data that can be easily represented inside of an editing environment constrain annotations and visualizations. It is easy to display short sequences of musical data outputted by a generative algorithm inside of the editor; it is more difficult to display sequences that are thousands of values in length. While I can readily imagine use cases where longer sequences are musically useful, in the environments I work on shorter sequences are more common during typical use.</p>
 
-      <p>With these three principles in mind, the next section describes a variety of annotations and visualization that we, and other users, have found useful in the context of live coding performances.</p>
+      <p>With these three principles in mind, the next section describes a variety of annotations and visualization that I, and other users, have found useful in the context of live coding performances.</p>
 
       </section>
 
       <section class='container code' >
         <h3>Catalog of techniques</h3>
-        <p>Our research augments the programming interface to include visualizations, self-modifying source code, automated annotations via inserted code comments, and a variety of other techniques. By injecting annotations and visualizations into the source code itself, we improve association between code and the annotations / visualizations depicting its effects. This placement of visualizations, characterized as <em>in situ</em> by Hofswell et. al, [<a href='https://homes.cs.washington.edu/~jhoffs/papers/2018-AugmentingCode-CHI.pdf' target=_blank>2</a> ] has been shown to aid in the understanding of programs</a> under certain conditions, which is intuitive following Gestalt principles of proximity. The annotations and visualizations we have developed are described below.</p> 
+        <p>This research augments programming interfaces to include visualizations, self-modifying source code, automated annotations via inserted code comments, and a variety of other techniques. By injecting annotations and visualizations into the source code itself, we improve association between code and the annotations / visualizations depicting its effects. This placement of visualizations, characterized as <em>in situ</em> by Hofswell et. al, [<a href='https://homes.cs.washington.edu/~jhoffs/papers/2018-AugmentingCode-CHI.pdf' target=_blank>2</a> ] has been shown to aid in the understanding of programs</a> under certain conditions, which is intuitive following Gestalt principles of proximity.</p> 
 
         <h4 class='title'>Repeating static values</h5>
-        <p>The simplest annotation we add to our environment is a rotating border around static elements that are accessed repeatedly. The rotation provides a visual indication of when the values are used. Survey results indicated that rotation was preferable to other techniques (such as flashing) due to its less distracting nature [<a href="http://www.charlie-roberts.com/pubs/gibber.annotations.pdf" target=_blank>1</a>].</p>
+        <p>The simplest annotation added to our environment is a rotating border around static elements that are accessed repeatedly. The rotation provides a visual indication of when the values are used. Survey results indicated that rotation was preferable to other techniques (such as flashing) due to its less distracting nature [<a href="http://www.charlie-roberts.com/pubs/gibber.annotations.pdf" target=_blank>1</a>].</p>
         
         <p>The example below shows a repeated scale index (0) being triggered every quarter note. We'll see how this simple annotation can be useful in combination with others in the next section.</p>
 
@@ -227,7 +233,7 @@ syn.note.seq( [0,3,7].rnd(), 1/8 )
 
       <section class='container code' >
         <h4 class='title'>Pattern transformations</h5>
-        <p>20th-century serialist techniques transform musical pattern using many techniques, including reversal, rotation, inversion, and scaling. We were inspired by Thor Magnussons's ixi lang environment [<a href="http://sro.sussex.ac.uk/46869/1/ixi_lang_02.pdf">3</a>] to depict these transformations within the code itself, clearly revealing how patterns are transformed over time. The video below shows the effect of this technique in an ixi lang recreation of Steve Reich's composition <em>Piano Phase</em>.</p>
+        <p>20th-century serialist techniques transform musical pattern using many techniques, including reversal, rotation, inversion, and scaling. I was inspired by Thor Magnussons's ixi lang environment [<a href="http://sro.sussex.ac.uk/46869/1/ixi_lang_02.pdf">3</a>] to depict these transformations within the code itself, clearly revealing how patterns are transformed over time. The video below shows the effect of this technique in an ixi lang recreation of Steve Reich's composition <em>Piano Phase</em>.</p>
 
 <iframe src="https://player.vimeo.com/video/14964509" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 <p><a href="https://vimeo.com/14964509">ixi lang take on Steve Reich&#039;s Piano Phase</a> from <a href="https://vimeo.com/ixi">ixi audio</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
@@ -243,7 +249,7 @@ drums.seq.values.rotate.seq( 1,1 )
           </div> 
         </div>
 
-        <p>The above example is more complex than the previous examples in this essay, providing an opportunity to see how two different instruments rhythmically relate to each other and also view transformations in musical pattern. It is perhaps worth comparing the example given above to the exact same code, but without the annotations in order to gauge how they affect perception of / engagement with the code.</p>
+        <p>The above example is more complex than the previous examples in this essay, providing an opportunity to see how two different instruments rhythmically relate to each other and also view transformations in musical pattern. It is perhaps worth comparing the example given above to the exact same code without annotations in order to gauge how they affect perception of / engagement with code.</p>
         <div id='transform2' class='example'>
           <div class='editor'>
 kick = Kick('tight').trigger.seq( .75, 1/4 )
@@ -266,7 +272,7 @@ kick = Kick('tight').trigger.seq( .75, Euclid(5,8) )
           </div> 
         </div>
 
-        <p>These generated patterns can also be transformed over time; these changes are also depicted in the source code comments. Note that when playback stops the code comments are automatically cleared. The example below shows comments used to display both the initial data generated by the Euclidean rhythm and its subsequent transformations. </p>
+        <p>These generated patterns can also be transformed over time, with the results depicted in the associated code comments. Note that when playback stops the code comments are automatically cleared. The example below shows comments used to display both the initial data generated by the Euclidean rhythm and its subsequent transformations. </p>
         <div id='euclid2' class='example'>
           <div class='editor'>
 // our first kick drum will play a steady beat
@@ -278,7 +284,7 @@ kick2.trigger[0].timings.rotate.seq( 1,1 )
           </div> 
         </div>
 
-        <p> In contrast to defining patterns that are known ahead of time, it is also useful to generate values on-the-fly throughout performance; in our environments this can be done by passing functions that generate values to sequences. The technique we described in this section for annotating generated patterns can also be used to show the output of such functions. Our first example shows the output of a function which outputs integers between 0-10; these values are then used to trigger notes in a scale.</p>.
+        <p> In contrast to defining patterns that are known ahead of time, it is also useful to generate values on-the-fly throughout performance; in our environments this can be done by passing functions that generate values to sequences. The technique we described in this section for annotating generated patterns can also be used to show the output of such functions. The next example shows the output of a function which outputs integers between 0-10; these values are then used to trigger notes in a scale.</p>
        <div id='anonymous1' class='example'>
           <div class='editor'>
 syn = Synth('bleep')
@@ -299,9 +305,9 @@ syn.note.seq( ()=> Math.round( Math.random() ), 1/4 )
 
       <section class='container code' >
         <h4 class='title'>Visualizing continuous data</h5>
-        <p>Our previous examples have all featured data that is discrete; for example, notes are triggered at particular moments in time, as our pattern transformations and many other types of events. However, the musical world is divided into discrete and continuous data. An individual note might be triggered at one moment in time (and released at another) but the expressive characteristics of that note, such as vibrato, are determined continuously over the note's duration.</p>
+        <p>The previous examples have all featured data that is discrete; for example, notes are triggered at particular moments in time, as are pattern transformations and many other types of events. However, the musical world is divided into discrete and continuous data. An individual note might begin in one moment but the expressive characteristics of that note, such as vibrato, are determined continuously over the note's duration.</p>
 
-        <p>During the development of gibberwocky, a live coding environment that targets external musical applications, we added affordances for defining continuous signals and sequencing changes to their parameters over time. In some live coding performances, I noticed that I often spent time early on programming discrete events and patterns, and then segued to creating continuous manipulations of these events. Put another way, many performances consisted of initially creating patterns, and then subsequently adding expressive nuance to them. However, at the time there were no affordances in our environment for displaying continuous signals, which led to a suddent lack of feedback during performances where continuous controls were being programmed. In order to corret this we added a simple visualization showing the output of generated signals. In the example below, a synth slowly moves through the left/right stereo spectrum based on the output of a sine oscillator.</p>
+        <p>During the development of gibberwocky, a live coding environment that targets external musical applications, my collaborator Graham Wakefield and I added affordances for defining continuous signals and sequencing changes to their parameters over time. In some live coding performances, I noticed that I often spent time at the beginning programming discrete events and patterns, and then segued to creating continuous manipulations of these events. Put another way, many performances consisted of initially creating patterns, and then subsequently adding expressive nuance to them. However, at the time there were no affordances in our environment for displaying continuous signals, which led to a suddent lack of feedback during performances where continuous controls were being programmed. In order to correct this we added a simple visualization showing the output of generated signals. In the example below, a synth slowly moves through the left/right stereo spectrum based on the output of a sine oscillator.</p>
 
         <div id='sparklines1' class='example'>
           <div class='editor'>
@@ -317,12 +323,12 @@ syn.pan = sine
 
         <p>Although we initially used sparklines for these visualizations, we subsequently found that including the output range of the signals greatly improved their usefulness. One interesting point to note is that the output ranges are dynamic, based off an analysis of the generated signal. This means that if the signal range changes by a significant factor, the visualization will update itself to reflect the current average output range; this behavior can be seen in the first example found in this essay.</p>
 
-        <p>However, for certain types of signals portraying the current window and its adjusted range proves problematic. Consider the ambient piece presented below, created in gibberwocky by performer <a href="http://lukasnowok.org">Lukas Nowok</a>. The piece primarily consists of long gestures, many slowly evolving over hundreds of musical measures; most of these gestures are simple fades of sonic parameters. Visualizing a short window of these fades yields flat lines that slowly rise vertically, and doesn't capture the gesture of the fade or provide useful information, revealing limitations in our generalized approach to displaying audio signals. </p>
+        <p>However, for certain types of signals portraying the current window and its adjusted range proves problematic. Consider the ambient piece presented below, created using gibberwocky by performer <a href="http://lukasnowok.org">Lukas Nowok</a>. The piece primarily consists of long gestures, many slowly evolving over hundreds of musical measures; most of these gestures are simple fades of sonic parameters. Visualizing a short window of these fades yields flat lines that slowly rise vertically, and fails capture the gesture of the fade or really provide any useful information at all, revealing limitations in our generalized approach to displaying audio signals. </p>
 
        <iframe width="560" height="315" src="https://www.youtube.com/embed/gl4JLCkbrfU?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> 
         
         <p>
-Because the gesture of a fade is so common in music programming, we implemented a visualization that displays the starting point and ending points of the fade and a line connecting them; an animation then shows the progress from the start to the end. Upon completion of the fade both the corresponding modulation and the visualization representing it are cleared.</p>
+Because the gesture of a fade is so common in music programming, I implemented a simple visualization that displays the starting point and ending points of the fade and a line connecting them; an animation then shows the progress from the start to the end. Upon completion of the fade both the corresponding modulation and the visualization representing it are cleared.</p>
 
         <div id='fade' class='example'>
           <div class='editor'>
@@ -335,7 +341,7 @@ syn.gain.fade( 0, .75, 8 )
 
 
 
-        <p>A notable precursor to this work in live coding literature is the in situ visualization described by Swift et. al for the Impromptu environment [<a href="https://eprints.qut.edu.au/61525/1/liveannotations.pdf">4</a>]. The image below, taken from the paper describing the work, shows two 'clocks' depicting the amount of time remaining before a recursive function next calls itself.</p>
+        <p>A notable precursor in using in situ visualizations in environments for live coding performance is described by Swift et. al for the Impromptu environment [<a href="https://eprints.qut.edu.au/61525/1/liveannotations.pdf">4</a>]. The image below, taken from the paper describing the work, shows two 'clocks' depicting the amount of time remaining before a recursive function next calls itself.</p>
 
 
         <img src='./media/impromptu.png'>
@@ -344,7 +350,7 @@ syn.gain.fade( 0, .75, 8 )
 
       <section class='container code' >
         <h4 class='title'>Mixing continuous and discrete information</h5>
-        <p>An idiomatic generative technique of electronic music is to <em>sample-and-hold</em> a continuous signal, effectively turning it into a discrete one. Instead of visualizing the resulting stepped signal, we chose instead to visualize the continuous signal before it is sampled, and then depict the points where sampling occurs. In this way we visualize both the discrete events and continuous signals that are being generated. In the example below, we use a sine oscillator to create a signal which is then sampled over time based on an Euclidean rhythm. These sampled values are then used to look up notes in a musical scale, which are then fed to a bass synthesizer.</p>
+        <p>An idiomatic generative technique of electronic music is to <em>sample-and-hold</em> a continuous signal, effectively turning it into a discrete one. Instead of visualizing the resulting stepped signal, I chose instead to visualize the continuous signal before it is sampled, and then depict the points where sampling occurs. In this way both the discrete events and continuous signals that are being generated are visualized. In the example below, a sine oscillator generates a signal which is then sampled over time based on an Euclidean rhythm. These sampled values are then used to look up notes in a musical scale, which are then fed to a bass synthesizer.</p>
 
         <div id='sparklines2' class='example'>
           <div class='editor'>
@@ -360,11 +366,11 @@ syn.note.seq( notes, Euclid(9,16) )
       
       <section class='container'>
         <h3>Challenges and Conclusions</h3>
-        <p>The biggest challenge in developing these techniques is simply the time it takes to figure out the best way to parse and markup the source code so that annotations and visualizations are possible. Using a dynamic language like JavaScript makes parsing more difficult, as there are a wide variety of different ways to accomplish a given task, and the annotations / visualizations need to be able to respond appropriately to each of them. Because of this, it is only over the last two years or so that I've enabled these features by default in the programming environments; up until that point they were strictly 'opt-in' for people that weren't afraid of the possible errors that they might incur. Moving the annotations to a more constrained domain-specific language might provide for greater safety and ease future development of these techniques.</p>
+        <p>The biggest challenge in developing these techniques is simply the time it takes to figure out the most efficient way to markup the source code so that annotations and visualizations are possible. Using a dynamic language like JavaScript makes markup more difficult, as there are a wide variety of different ways to accomplish a given task, and the annotations / visualizations need to be able to respond appropriately to each of them. Because of this, it is only over the last two years or so that I've enabled these features by default in the programming environments; up until that point they were strictly 'opt-in' for people that weren't afraid of the possible errors that they might incur. Moving the annotations to a more constrained, domain-specific language should provide for greater safety and ease future development of these techniques.</p>
 
         <p>Another challenge is that some data lends itself better to this type of depiction than others. For example, if I use a function that generates an array of a thousand random numbers, it becomes quite impractical to display every output value inside the code editor in comments. Similarly, it is difficult to perceive change in continuous signals with extremely low frequncies; in many types of music modulations lasting over a minute in length are quite common, and hard to depict using the automated techniques described here.</p>
 
-        <p>But, in the end, the feedback provided by these annotations and visualizations have become a critical part of my live coding practice. Inevitably when I participate in events with other live coders who don't have the same type of feedback systems in place, audience members go out of their way to tell me how much they appreciate the extra feedback and, in some cases, how it improved their ability to understand what was happening during the performance. We are optimistic that we can continue improving the robustness of our techniques so that they can be applied to a wider variety of live coding environments in the future.</p>
+        <p>But, in the end, the feedback provided by these annotations and visualizations have become a critical part of my live coding practice. Audience members often tell me how much they appreciate the feedback provided by the visualizations and annotations, and, in some cases, describe how it improved their ability to understand what was happening during the performance. I am optimistic that the robustness of these techniques can be improved so that they can be applied to a wider variety of live coding environments in the future.</p>
       </section>
 
       <section class='container'>

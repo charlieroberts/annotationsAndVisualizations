@@ -2313,6 +2313,13 @@ const createProxies = function( pre, post, proxiedObj ) {
     Object.defineProperty( proxiedObj, prop, {
       get() { return ugen },
       set(value) {
+        if( ugen.clear !== undefined ) {
+          ugen.clear()
+          console.log( 'clearing:', ugen.clear, ugen )
+        }else if( ugen.__onclear !== undefined ) {
+          // XXX does this condition ever happen?
+          ugen.__onclear()     
+        }
 
         const member = ugen
         if( member !== undefined && value !== undefined) {
@@ -2360,32 +2367,6 @@ const createProxies = function( pre, post, proxiedObj ) {
               }
             }
 
-            // XXX this is supposed to loop through the effecfs of the old ugen, compare them to the fx
-            // in the new ugen, and then connect to any destination busses. unfortunately it seems buggy,
-            // and I don't feel like fixing at the moment. This means that you have to reconnect effects
-            // to busses that aren't the master (or the next effect in an effect chain).
-
-            /*
-            if( member.fx !== undefined && member.fx.length > 0 && value.fx !== undefined && value.fx.length > 0 ) {
-              for( let i = 0; i < member.fx.length; i++ ) {
-                const newEffect = value.fx[ i ]
-                if( newEffect !== undefined ) {
-                  const oldEffect = member.fx[ i ]
-
-                  for( let j = 0; j < oldEffect.__wrapped__.connected.length; j++ ) {
-                    let connection = oldEffect.__wrapped__.connected[ j ][ 0 ]
-                    
-                    // check to make sure connection is not simply in fx chain...
-                    // if it is, it is probably recreatd in as part of a preset, so
-                    // don't redo it here.
-                    if( member.fx.indexOf( connection ) === -1 ) {
-                      newEffect.connect( connection, oldEffect.__wrapped__.connected[ j ][ 1 ] )  
-                    }
-                  }
-                }
-              }
-            }*/
-
             // make sure to disconnect any fx in the old ugen's fx chain
             member.fx.forEach( effect => { 
               effect.disconnect()
@@ -2393,13 +2374,6 @@ const createProxies = function( pre, post, proxiedObj ) {
             })
             member.fx.length = 0
           }
-        }
-
-        if( ugen.clear !== undefined ) {
-          ugen.clear()
-        }else if( ugen.__onclear !== undefined ) {
-          // XXX does this condition ever happen?
-          ugen.__onclear()     
         }
 
         ugen = value
