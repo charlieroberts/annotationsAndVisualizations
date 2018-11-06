@@ -2208,11 +2208,17 @@ const getPlainText = function( node ){
 
 const createEditor = function( selector, shouldAnnotate = true ) {
   const container = document.querySelector( selector )
-  
+
   const editor = document.querySelector( selector + ' .editor' ) 
   const code = getPlainText( editor ) 
   editor.innerText = ''
 
+  const caption = container.getAttribute('caption')
+  if( caption !== null ) {
+    const captionNode = document.createElement('div')
+    captionNode.innerHTML = `<em>${caption}</em>`
+    container.insertBefore( captionNode, editor )
+  }
   const cm = CodeMirror( document.querySelector( selector + ' .editor' ), {
     mode:   'javascript',
     value:  code, 

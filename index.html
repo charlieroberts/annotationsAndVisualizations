@@ -124,10 +124,10 @@
 				<h3 class="title">Introduction</h3>
         <p>This web essay will explore the addition of annotations and visualizations to custom-developed programming environments for <a href="http://toplap.org/about">live coding performance</a>; in this essay I will use the term 'live coding' to refer to the digital arts practice, as opposed to live programming more generally.  I provide a catalogue of techniques I've developed to help reveal algorithmic activity to both audience members and programmer/performers. These techniques are implemented in standard JavaScript, which is also the end-user language; however, many are generalizable and some have drawn inspiration from features found in programming environments for other languages. The code examples below are <em>live</em>; feel free to make minor edits and view / listen to the resulting changes. In addition to pressing the 'Play' button, which selects all code in a given example and runs it, you can also highlight code you'd like to execute and hit Ctrl+Enter.</p>
 
-        <p>Before diving in, I'd like to provide an example of what many of these annotations look like when combined. Although they might be somewhat overwhelming when simultaneously viewed, in my experience they can provide valuable scaffolding to the development of a program as it is written over time.</p>
+        <p>Before diving in, I'd like to provide an example of what many of these annotations look like when combined, as shown in Listing 1. Although they might be somewhat overwhelming when simultaneously viewed, in my experience they can provide valuable scaffolding to the development of a program as it is written over time.</p>
 
 
-        <div id='full' class='example'>
+        <div id='full' class='example' caption='Listing 1: A music program with percussion, bass line, and various pattern transformations.'>
           <div class='editor'>
 verb = Bus2('spaceverb')
 delay = Bus2('delay.1/6')
@@ -194,9 +194,9 @@ notesPattern.gain[0].values.set.seq( [[7,7,7,7],[16,14,12,10]], 8 )
         <h4 class='title'>Repeating static values</h5>
         <p>The simplest annotation added to our environment is a rotating border around static elements that are accessed repeatedly. The rotation provides a visual indication of when the values are used. Survey results indicated that rotation was preferable to other techniques (such as flashing) due to its less distracting nature [<a href="http://www.charlie-roberts.com/pubs/gibber.annotations.pdf" target=_blank>1</a>].</p>
         
-        <p>The example below shows a repeated scale index (0) being triggered every quarter note. We'll see how this simple annotation can be useful in combination with others in the next section.</p>
+        <p>Listing 2 shows a repeated scale index (0) being triggered every quarter note. We'll see how this simple annotation can be useful in combination with others in the next section.</p>
 
-        <div id='static1' class='example'>
+        <div id='static1' class='example' caption='Listing 2: Rotating borders indicating actvity.'>
           <div class='editor'>
 syn = Synth('bleep')
 syn.note.seq( 0, 1/4 )
@@ -217,18 +217,18 @@ syn.note.seq( 0, 1/4 )
         the pattern are being triggered when, so that programmers and audience members can associate the the values being triggered with
         the corresponding sonic results.</p>
 
-        <p>In the example below, a synthesizer plays a simple pattern that loops through the seven notes of a standard scale from Western harmony. In addition to this pattern of melodic output, a rhythmic pattern alternates between quarter notes and eighth notes in duration.</p>
+        <p>In Listing 3, a synthesizer plays a simple pattern that loops through the seven notes of a standard scale from Western harmony. In addition to this melodic pattern, a rhythmic pattern alternates between quarter notes and eighth notes in duration.</p>
 
-        <div id='array1' class='example'>
+        <div id='array1' class='example' caption='Listing 3: Revealing the phase of musical patterns.'>
           <div class='editor'>
 syn = Synth('bleep')
 syn.note.seq( [0,1,2,3,4,5,6,7], [1/4,1/8] )
           </div> 
         </div>
 
-        <p>The potential of this method is more apparent when the pattern is not playing sequentially. In the example below, scale indices are randomly chosen. Also note that the rotating border annotation now provides a indication of how many times a randomly chosen value has been repeated in a row (modulo 4). </p>
+        <p>The potential of this method is more apparent when the pattern is not playing sequentially. In Listing 4, scale indices are randomly chosen. Also note that the rotating border annotation now provides a indication of how many times a randomly chosen value has been repeated in a row (modulo 4). </p>
 
-        <div id='array2' class='example'>
+        <div id='array2' class='example' caption='Listing 4: Highlighting randomly selected members of patterns.'>
           <div class='editor'>
 syn = Synth('bleep')
 syn.note.seq( [0,3,7].rnd(), 1/8 )
@@ -243,9 +243,9 @@ syn.note.seq( [0,3,7].rnd(), 1/8 )
 <iframe src="https://player.vimeo.com/video/14964509" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 <p><a href="https://vimeo.com/14964509">ixi lang take on Steve Reich&#039;s Piano Phase</a> from <a href="https://vimeo.com/ixi">ixi audio</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
-        <p>In the example below, a percussion pattern is played against a steady kick drum rhythm. Each of the symbols in the percussion pattern denotes a different sound that is played; this pattern is then rotated one position after every measure, creating varying rhythms against the constant kick drum.</p>
+        <p>In Listing 5, a percussion pattern is played against a steady kick drum rhythm. Each of the symbols in the percussion pattern denotes a different sound that is played; this pattern is then rotated one position after every measure, creating varying rhythms against the constant kick drum.</p>
 
-        <div id='transform1' class='example'>
+        <div id='transform1' class='example' caption='Listing 5: Displaying pattern transformations'>
           <div class='editor'>
 kick = Kick('tight').trigger.seq( .75, 1/4 )
 
@@ -254,8 +254,8 @@ drums.seq.values.rotate.seq( 1,1 )
           </div> 
         </div>
 
-        <p>The above example is more complex than the previous examples in this essay, providing an opportunity to see how two different instruments rhythmically relate to each other and also view transformations in musical pattern. It is perhaps worth comparing the example given above to the exact same code without annotations in order to gauge how they affect perception of / engagement with code.</p>
-        <div id='transform2' class='example'>
+        <p>The code in Listing 5 is more complex than the previous examples in this essay, providing an opportunity to see how two different instruments rhythmically relate to each other and also view transformations in musical pattern. It is perhaps worth comparing the example given above to the exact same code without annotations, shown in Listing 6, in order to gauge how annotations affect perception of / engagement with code.</p>
+        <div id='transform2' class='example' caption='Listing 6: This example is the same as Listing 5, but without using any annotations.'>
           <div class='editor'>
 kick = Kick('tight').trigger.seq( .75, 1/4 )
 
@@ -270,15 +270,15 @@ drums.seq.values.rotate.seq( 1,1 )
         <h4 class='title'>Revealing 'hidden' data and function output</h5>
         <p>As we saw from prior examples, we can highlight selected members of patterns as they are selected / triggered. However, this assumes that the pattern has been fully notated, with all its members included in the source code document. But it is natural to assume that in algorithmic music the source material for musical patterns will likely be defined algorithmically, as opposed to manually entered by a programmer/perfomer.</p>
 
-        <p>In such instances pattern generators are present in the source code as opposed to the algorithmically generated patterns; the generated patterns are hidden. Our solution to this problem is to present these patterns in code comments adjacent to the code representing the pattern generators responsible for creating the them. For our next example, we'll use a 'Euclidean' rhythm, a terse description of a rhythmic pattern drawn from a well-known musicology paper by Godfried Toussaint [<a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf" target=_blank>3</a>, where a given number of pulses are fit into a given number of slots using Bjorklund's algorithm. The results of running the Euclidean rhythm will determine the output of a kick drum. Whenever a zero is present in the pattern a rest will be triggered; a one (pulse) will trigger the kick drum.</p>
-        <div id='euclid' class='example'>
+        <p>In such instances pattern generators are present in the source code as opposed to the data that they generate; the generated patterns are hidden. Our solution to this problem is to present these patterns in code comments adjacent to the code representing the pattern generators responsible for creating them. In Listing 7, we'll use a 'Euclidean' rhythm, a terse description of a rhythmic pattern drawn from a well-known musicology paper by Godfried Toussaint [<a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf" target=_blank>3</a>, where a given number of pulses are fit into a given number of slots using Bjorklund's algorithm. The results of running the Euclidean rhythm will determine the output of a kick drum. Whenever a zero is present in the pattern a rest will be triggered; a one (pulse) will trigger the kick drum.</p>
+        <div id='euclid' class='example' caption='Listing 7: Revealing the output of pattern generators.'>
           <div class='editor'>
 kick = Kick('tight').trigger.seq( .75, Euclid(5,8) ) 
           </div> 
         </div>
 
-        <p>These generated patterns can also be transformed over time, with the results depicted in the associated code comments. Note that when playback stops the code comments are automatically cleared. The example below shows comments used to display both the initial data generated by the Euclidean rhythm and its subsequent transformations. </p>
-        <div id='euclid2' class='example'>
+        <p>These generated patterns can also be transformed over time, with the results depicted in the associated code comments. Note that when playback stops the code comments are automatically cleared. Listing 8 shows comments used to display both the initial data generated by the Euclidean rhythm and its subsequent transformations. </p>
+        <div id='euclid2' class='example' caption='Listing 8: Transforming the data created by a pattern generator.'>
           <div class='editor'>
 // our first kick drum will play a steady beat
 kick = Kick('tight').trigger.seq( .75, 1/4 )
@@ -289,8 +289,8 @@ kick2.trigger[0].timings.rotate.seq( 1,1 )
           </div> 
         </div>
 
-        <p> In contrast to defining patterns that are known ahead of time, it is also useful to generate values on-the-fly throughout performance; in our environments this can be done by passing functions that generate values to sequences. The technique we described in this section for annotating generated patterns can also be used to show the output of such functions. The next example shows the output of a function which outputs integers between 0-10; these values are then used to trigger notes in a scale.</p>
-       <div id='anonymous1' class='example'>
+        <p> In contrast to defining patterns that are known ahead of time, it is also useful to generate values on-the-fly throughout performance; in our environments this can be done by passing functions that generate values to sequence constructors. The same technique we described earlier in this section for annotating generated patterns (shown in Listings 7–8) can also be used to show the output of such functions. Listing 9 shows the output of a function which outputs integers between 0-10; these values are then used to trigger notes in a scale.</p>
+       <div id='anonymous1' class='example' caption='Listing 9: Revealing the output of functions.'>
           <div class='editor'>
 syn = Synth('bleep')
 syn.note.seq( Rndi(0,10), 1/4 )
@@ -299,7 +299,7 @@ syn.note.seq( Rndi(0,10), 1/4 )
 
         <p>We note that while Rndi (and Rndf) are included as convenience methods, there is nothing special about them in terms of annotations. The technique works for any function, enabling performers and students to experiment with writing their own generative functions while receiving visual feedback. Below we use an anonymous function that randomly returns a value of zero or one.</p>
 
-        <div id='anonymous2' class='example'>
+        <div id='anonymous2' class='example' caption='Listing 10: Revealing the output of an anonymous function'>
           <div class='editor'>
 syn = Synth('bleep')
 syn.note.seq( ()=> Math.round( Math.random() ), 1/4 )
@@ -310,11 +310,11 @@ syn.note.seq( ()=> Math.round( Math.random() ), 1/4 )
 
       <section class='container code' >
         <h4 class='title'>Visualizing continuous data</h5>
-        <p>The previous examples have all featured data that is discrete; for example, notes are triggered at particular moments in time, as are pattern transformations and many other types of events. However, the musical world is divided into discrete and continuous data. An individual note might begin in one moment but the expressive characteristics of that note, such as vibrato, are determined continuously over the note's duration.</p>
+        <p>The previous examples have all featured data that is discrete; for example, notes are triggered at particular moments in time, as are pattern transformations and many other types of events. However, the musical world is divided into discrete and continuous data. An individual note might begin in a single moment but the expressive characteristics of that note, such as vibrato, are determined continuously over the note's duration.</p>
 
-        <p>During the development of gibberwocky, a live coding environment that targets external musical applications, my collaborator Graham Wakefield and I added affordances for defining continuous signals and sequencing changes to their parameters over time. In some live coding performances, I noticed that I often spent time at the beginning programming discrete events and patterns, and then segued to creating continuous manipulations of these events. Put another way, many performances consisted of initially creating patterns, and then subsequently adding expressive nuance to them. However, at the time there were no affordances in our environment for displaying continuous signals, which led to a suddent lack of feedback during performances where continuous controls were being programmed. In order to correct this we added a simple visualization showing the output of generated signals. In the example below, a synth slowly moves through the left/right stereo spectrum based on the output of a sine oscillator.</p>
+        <p>During the development of gibberwocky, a live coding environment that targets external musical applications, my collaborator Graham Wakefield and I added affordances for defining continuous signals and sequencing changes to their parameters over time. In some live coding performances, I noticed that I often spent time at the beginning programming discrete events and patterns, and then segued to creating continuous manipulations of these events. Put another way, many performances consisted of initially creating patterns, and then subsequently adding expressive nuance to them. However, at the time there were no affordances in our environment for displaying continuous signals, which led to a suddent lack of visual feedback during performances when continuous controls were being programmed. In order to correct this we added a simple visualization showing the output of generated signals. In Listing 11, a synth slowly moves through the left/right stereo spectrum based on the output of a sine oscillator.</p>
 
-        <div id='sparklines1' class='example'>
+        <div id='sparklines1' class='example' caption='Listing 11: Visualizing a continuous signal in situ.'>
           <div class='editor'>
 syn = Synth('bleep', { panVoices:true })
 syn.note.seq( 0, 1/8 )
@@ -335,7 +335,7 @@ syn.pan = sine
         <p>
 Because the gesture of a fade is so common in music programming, I implemented a simple visualization that displays the starting point and ending points of the fade and a line connecting them; an animation then shows the progress from the start to the end. Upon completion of the fade both the corresponding modulation and the visualization representing it are cleared.</p>
 
-        <div id='fade' class='example'>
+        <div id='fade' class='example' caption='Listing 12: Visualizing a parameter fade.'>
           <div class='editor'>
 syn = Synth('bleep')
 syn.note.seq( 0, 1/8 )
@@ -346,8 +346,7 @@ syn.gain.fade( 0, .75, 8 )
 
 
 
-        <p>A notable precursor in using in situ visualizations in environments for live coding performance is described by Swift et. al for the Impromptu environment [<a href="https://eprints.qut.edu.au/61525/1/liveannotations.pdf">4</a>]. The image below, taken from the paper describing the work, shows two 'clocks' depicting the amount of time remaining before a recursive function next calls itself.</p>
-
+        <p>A notable precursor using in situ visualizations in environments for live coding performance is described by Swift et. al for the Impromptu environment [<a href="https://eprints.qut.edu.au/61525/1/liveannotations.pdf">4</a>]. The image below, taken from the paper describing the work, shows two 'clocks' depicting the amount of time remaining before a recursive function next calls itself.</p>
 
         <img src='./media/impromptu.png'>
         <div style='clear:both; margin-bottom:4rem'><em>In situ visualizations in the Impromptu environment.</em></div>
@@ -357,7 +356,7 @@ syn.gain.fade( 0, .75, 8 )
         <h4 class='title'>Mixing continuous and discrete information</h5>
         <p>An idiomatic generative technique of electronic music is to <em>sample-and-hold</em> a continuous signal, effectively turning it into a discrete one. Instead of visualizing the resulting stepped signal, I chose instead to visualize the continuous signal before it is sampled, and then depict the points where sampling occurs. In this way both the discrete events and continuous signals that are being generated are visualized. In the example below, a sine oscillator generates a signal which is then sampled over time based on an Euclidean rhythm. These sampled values are then used to look up notes in a musical scale, which are then fed to a bass synthesizer.</p>
 
-        <div id='sparklines2' class='example'>
+        <div id='sparklines2' class='example' caption='Listing 13: Sampling continuous waveforms.'>
           <div class='editor'>
 verb = Bus2( 'spaceverb' )
 syn = Synth( 'acidBass2' ).connect( verb, .225 )
