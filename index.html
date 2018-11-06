@@ -109,7 +109,7 @@
           charlie@charlie-roberts.com
           </p>
 
-          <p><em>last edited:11/05/2018</em></p>
+          <p><em>last edited:11/06/2018</em></p>
 				</section>
 			</nav>
 
@@ -312,17 +312,17 @@ syn.note.seq( ()=> Math.round( Math.random() ), 1/4 )
         <h4 class='title'>Visualizing continuous data</h5>
         <p>The previous examples have all featured data that is discrete; for example, notes are triggered at particular moments in time, as are pattern transformations and many other types of events. However, the musical world is divided into discrete and continuous data. An individual note might begin in a single moment but the expressive characteristics of that note, such as vibrato, are determined continuously over the note's duration.</p>
 
-        <p>During the development of gibberwocky, a live coding environment that targets external musical applications, my collaborator Graham Wakefield and I added affordances for defining continuous signals and sequencing changes to their parameters over time. In some live coding performances, I noticed that I often spent time at the beginning programming discrete events and patterns, and then segued to creating continuous manipulations of these events. Put another way, many performances consisted of initially creating patterns, and then subsequently adding expressive nuance to them. However, at the time there were no affordances in our environment for displaying continuous signals, which led to a suddent lack of visual feedback during performances when continuous controls were being programmed. In order to correct this we added a simple visualization showing the output of generated signals. In Listing 11, a synth slowly moves through the left/right stereo spectrum based on the output of a sine oscillator.</p>
+        <p>During the development of gibberwocky, a live coding environment that targets external musical applications, my collaborator Graham Wakefield and I added affordances for defining continuous signals and sequencing changes to their parameters over time. In some live coding performances, I noticed that I often spent time at the beginning programming discrete events and patterns, and then segued to creating continuous manipulations of these events. Put another way, many performances consisted of initially creating patterns, and then subsequently adding expressive nuance to them. However, at the time there were no affordances in our environment for displaying continuous signals, which led to a suddent lack of visual feedback during performances when continuous controls were being programmed. In order to correct this we added a simple visualization showing the output of generated signals. In Listing 11, the cutoff frequency of a resonant filter is  controller by a sine oscillator.</p>
 
         <div id='sparklines1' class='example' caption='Listing 11: Visualizing a continuous signal in situ.'>
           <div class='editor'>
-syn = Synth('bleep', { panVoices:true })
+syn = Synth('acidBass')
 syn.note.seq( 0, 1/8 )
 
 // create a sine oscillator in the range of {0,1}
 sine = gen( add( .5, mul( cycle(.5), .5 ) ) )
 
-syn.pan = sine
+syn.cutoff = sine
           </div> 
         </div>
 
