@@ -47,7 +47,7 @@
 	],
 	"dependencies": {
 		"acorn": "^6.0.2",
-		"acorn-walk": "^6.1.0",
+		"acorn-walk": "^6.1.1",
 		"aliasify": "^2.1.0",
 		"codemirror": "^5.40.2",
 		"normalize.css": "~5.0.0",

@@ -2766,7 +2766,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzers.js":2,"./envelopes/envelopes.js":7,"./filters/filters.js":16,"./fx/effect.js":25,"./fx/effects.js":26,"./instruments/instrument.js":37,"./instruments/instruments.js":38,"./instruments/polyMixin.js":42,"./instruments/polytemplate.js":43,"./misc/binops.js":48,"./misc/bus.js":49,"./misc/bus2.js":50,"./misc/monops.js":51,"./misc/panner.js":52,"./misc/time.js":53,"./oscillators/oscillators.js":56,"./scheduling/scheduler.js":59,"./scheduling/seq2.js":60,"./scheduling/sequencer.js":61,"./ugen.js":62,"./ugenTemplate.js":63,"./utilities.js":64,"./workletProxy.js":65,"genish.js":103,"memory-helper":140}],33:[function(require,module,exports){
+},{"./analysis/analyzers.js":2,"./envelopes/envelopes.js":7,"./filters/filters.js":16,"./fx/effect.js":25,"./fx/effects.js":26,"./instruments/instrument.js":37,"./instruments/instruments.js":38,"./instruments/polyMixin.js":42,"./instruments/polytemplate.js":43,"./misc/binops.js":48,"./misc/bus.js":49,"./misc/bus2.js":50,"./misc/monops.js":51,"./misc/panner.js":52,"./misc/time.js":53,"./oscillators/oscillators.js":56,"./scheduling/scheduler.js":59,"./scheduling/seq2.js":60,"./scheduling/sequencer.js":61,"./ugen.js":62,"./ugenTemplate.js":63,"./utilities.js":64,"./workletProxy.js":65,"genish.js":103,"memory-helper":141}],33:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -5275,9 +5275,8 @@ const utilities = {
 
   createWorklet( resolve ) {
     Gibberish.ctx.audioWorklet.addModule( Gibberish.workletPath ).then( () => {
-      Gibberish.worklet = sac === null 
-        ? new AudioWorkletNode( Gibberish.ctx, 'gibberish', { outputChannelCount:[2] } )
-        : new sac.AudioWorkletNode( Gibberish.ctx, 'gibbersh', { outputChannelCount:[2] } )
+      Gibberish.worklet = new AudioWorkletNode( Gibberish.ctx, 'gibberish', { outputChannelCount:[2] } )
+        //: new sac.AudioWorkletNode( Gibberish.ctx, 'gibbersh', { outputChannelCount:[2] } )
 
       Gibberish.worklet.connect( Gibberish.ctx.destination )
       Gibberish.worklet.port.onmessage = event => {
@@ -5534,7 +5533,7 @@ return __proxy
 
 }
 
-},{"serialize-javascript":141}],66:[function(require,module,exports){
+},{"serialize-javascript":140}],66:[function(require,module,exports){
 /* big.js v3.1.3 https://github.com/MikeMcl/big.js/LICENCE */
 ;(function (global) {
     'use strict';
@@ -8380,7 +8379,7 @@ let gen = {
 
 module.exports = gen
 
-},{"memory-helper":140}],97:[function(require,module,exports){
+},{"memory-helper":141}],97:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -10372,99 +10371,6 @@ module.exports = ( in1, min=0, max=1 ) => {
 }
 
 },{"./floor.js":93,"./gen.js":96,"./memo.js":108,"./sub.js":131}],140:[function(require,module,exports){
-'use strict';
-
-var MemoryHelper = {
-  create: function create() {
-    var size = arguments.length <= 0 || arguments[0] === undefined ? 4096 : arguments[0];
-    var memtype = arguments.length <= 1 || arguments[1] === undefined ? Float32Array : arguments[1];
-
-    var helper = Object.create(this);
-
-    Object.assign(helper, {
-      heap: new memtype(size),
-      list: {},
-      freeList: {}
-    });
-
-    return helper;
-  },
-  alloc: function alloc(amount) {
-    var idx = -1;
-
-    if (amount > this.heap.length) {
-      throw Error('Allocation request is larger than heap size of ' + this.heap.length);
-    }
-
-    for (var key in this.freeList) {
-      var candidateSize = this.freeList[key];
-
-      if (candidateSize >= amount) {
-        idx = key;
-
-        this.list[idx] = amount;
-
-        if (candidateSize !== amount) {
-          var newIndex = idx + amount,
-              newFreeSize = void 0;
-
-          for (var _key in this.list) {
-            if (_key > newIndex) {
-              newFreeSize = _key - newIndex;
-              this.freeList[newIndex] = newFreeSize;
-            }
-          }
-        }
-        
-        break;
-      }
-    }
-    
-    if( idx !== -1 ) delete this.freeList[ idx ]
-
-    if (idx === -1) {
-      var keys = Object.keys(this.list),
-          lastIndex = void 0;
-
-      if (keys.length) {
-        // if not first allocation...
-        lastIndex = parseInt(keys[keys.length - 1]);
-
-        idx = lastIndex + this.list[lastIndex];
-      } else {
-        idx = 0;
-      }
-
-      this.list[idx] = amount;
-    }
-
-    if (idx + amount >= this.heap.length) {
-      throw Error('No available blocks remain sufficient for allocation request.');
-    }
-    return idx;
-  },
-  free: function free(index) {
-    if (typeof this.list[index] !== 'number') {
-      throw Error('Calling free() on non-existing block.');
-    }
-
-    this.list[index] = 0;
-
-    var size = 0;
-    for (var key in this.list) {
-      if (key > index) {
-        size = key - index;
-        break;
-      }
-    }
-
-    this.freeList[index] = size;
-  }
-};
-
-module.exports = MemoryHelper;
-
-},{}],141:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -10584,6 +10490,111 @@ module.exports = function serialize(obj, options) {
         return serializedFn;
     });
 }
+
+},{}],141:[function(require,module,exports){
+'use strict'
+
+let MemoryHelper = {
+  create( sizeOrBuffer=4096, memtype=Float32Array ) {
+    let helper = Object.create( this )
+
+    // conveniently, buffer constructors accept either a size or an array buffer to use...
+    // so, no matter which is passed to sizeOrBuffer it should work.
+    Object.assign( helper, {
+      heap: new memtype( sizeOrBuffer ),
+      list: {},
+      freeList: {}
+    })
+
+    return helper
+  },
+
+  alloc( size, immutable ) {
+    let idx = -1
+
+    if( size > this.heap.length ) {
+      throw Error( 'Allocation request is larger than heap size of ' + this.heap.length )
+    }
+
+    for( let key in this.freeList ) {
+      let candidate = this.freeList[ key ]
+
+      if( candidate.size >= size ) {
+        idx = key
+
+        this.list[ idx ] = { size, immutable, references:1 }
+
+        if( candidate.size !== size ) {
+          let newIndex = idx + size,
+              newFreeSize
+
+          for( let key in this.list ) {
+            if( key > newIndex ) {
+              newFreeSize = key - newIndex
+              this.freeList[ newIndex ] = newFreeSize
+            }
+          }
+        }
+
+        break
+      }
+    }
+
+    if( idx !== -1 ) delete this.freeList[ idx ]
+
+    if( idx === -1 ) {
+      let keys = Object.keys( this.list ),
+          lastIndex
+
+      if( keys.length ) { // if not first allocation...
+        lastIndex = parseInt( keys[ keys.length - 1 ] )
+
+        idx = lastIndex + this.list[ lastIndex ].size
+      }else{
+        idx = 0
+      }
+
+      this.list[ idx ] = { size, immutable, references:1 }
+    }
+
+    if( idx + size >= this.heap.length ) {
+      throw Error( 'No available blocks remain sufficient for allocation request.' )
+    }
+    return idx
+  },
+
+  addReference( index ) {
+    if( this.list[ index ] !== undefined ) { 
+      this.list[ index ].references++
+    }
+  },
+
+  free( index ) {
+    if( this.list[ index ] === undefined ) {
+      throw Error( 'Calling free() on non-existing block.' )
+    }
+
+    let slot = this.list[ index ]
+    if( slot === 0 ) return
+    slot.references--
+
+    if( slot.references === 0 && slot.immutable !== true ) {    
+      this.list[ index ] = 0
+
+      let freeBlockSize = 0
+      for( let key in this.list ) {
+        if( key > index ) {
+          freeBlockSize = key - index
+          break
+        }
+      }
+
+      this.freeList[ index ] = freeBlockSize
+    }
+  },
+}
+
+module.exports = MemoryHelper
 
 },{}]},{},[32])(32)
 });

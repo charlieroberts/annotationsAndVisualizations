@@ -815,8 +815,6 @@ module.exports = ( patternObject, marker, className, cm ) => {
     } catch( e ) {} // yes, I just did that XXX 
   }
 
-  Gibber.subscribe( 'clear', patternObject.clear )
-
   return update
 }
 
@@ -1022,6 +1020,7 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   }
 
   patternObject._onchange = () => {
+    return
     //let delay = Utility.beatsToMs( 1,  Gibber.Scheduler.bpm )
 
     // markStart is a closure variable that will be used in the call
@@ -1048,11 +1047,11 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
 
     // check to see if the last character is a parenthesis... if so we could
     // not add 1 to commentPos.to.ch so that we don't accidentally delete it.
-    const end = { line:commentPos.to.line, ch:commentPos.to.ch+1 } 
+    const end = { line:commentPos.to.line, ch:commentPos.to.ch + 1 } 
     const text = cm.getRange( commentPos.from, end )
     const replacement = text[ text.length - 1 ] === ')' ? ')' : '' 
 
-    cm.replaceRange( replacement, commentPos.from, end )
+    cm.replaceRange( replacement, commentPos.from, commentPos.to )
     patternObject.commentMarker.clear()
   }
 
@@ -2239,9 +2238,9 @@ const createEditor = function( selector, shouldAnnotate = true ) {
   play.classList.add( 'float-right' )
   play.onclick = ()=> {
     if( Gibber.initialized === true ) {
-      playCode( cm, shouldAnnotate )
+      playCode( cm, shouldAnnotate, true )
     }else{
-      setTimeout( ()=> playCode( cm, shouldAnnotate ), 250 )
+      setTimeout( ()=> playCode( cm, shouldAnnotate, true ), 250 )
     }
 
     return true
@@ -2262,8 +2261,7 @@ const createEditor = function( selector, shouldAnnotate = true ) {
 
 const playCode = function( cm, shouldAnnotate=true ) {
   cm.execCommand( 'selectAll' )
-  CodeMirror.keyMap.playground[ 'Ctrl-Enter' ]( cm,shouldAnnotate ) 
-  //cm.execCommand( 'undoSelection' )
+  CodeMirror.keyMap.playground[ 'Ctrl-Enter' ]( cm,shouldAnnotate, true ) 
 }
 
 window.onload = function() {
@@ -2275,6 +2273,7 @@ window.onload = function() {
   window.Environment = environment
   environment.annotations = true
 
+  environment.lastEditor = null
   // XXX this should not be in 'debug' mode...
   environment.debug = true
   environment.codeMarkup = codeMarkup( Gibber )
@@ -2312,6 +2311,7 @@ window.onload = function() {
 let shouldUseProxies = false
 environment.proxies = []
 
+
 const createProxies = function( pre, post, proxiedObj ) {
   const newProps = post.filter( prop => pre.indexOf( prop ) === -1 )
 
@@ -2321,13 +2321,6 @@ const createProxies = function( pre, post, proxiedObj ) {
     Object.defineProperty( proxiedObj, prop, {
       get() { return ugen },
       set(value) {
-        if( ugen.clear !== undefined ) {
-          ugen.clear()
-          console.log( 'clearing:', ugen.clear, ugen )
-        }else if( ugen.__onclear !== undefined ) {
-          // XXX does this condition ever happen?
-          ugen.__onclear()     
-        }
 
         const member = ugen
         if( member !== undefined && value !== undefined) {
@@ -2375,6 +2368,32 @@ const createProxies = function( pre, post, proxiedObj ) {
               }
             }
 
+            // XXX this is supposed to loop through the effecfs of the old ugen, compare them to the fx
+            // in the new ugen, and then connect to any destination busses. unfortunately it seems buggy,
+            // and I don't feel like fixing at the moment. This means that you have to reconnect effects
+            // to busses that aren't the master (or the next effect in an effect chain).
+
+            /*
+            if( member.fx !== undefined && member.fx.length > 0 && value.fx !== undefined && value.fx.length > 0 ) {
+              for( let i = 0; i < member.fx.length; i++ ) {
+                const newEffect = value.fx[ i ]
+                if( newEffect !== undefined ) {
+                  const oldEffect = member.fx[ i ]
+
+                  for( let j = 0; j < oldEffect.__wrapped__.connected.length; j++ ) {
+                    let connection = oldEffect.__wrapped__.connected[ j ][ 0 ]
+                    
+                    // check to make sure connection is not simply in fx chain...
+                    // if it is, it is probably recreatd in as part of a preset, so
+                    // don't redo it here.
+                    if( member.fx.indexOf( connection ) === -1 ) {
+                      newEffect.connect( connection, oldEffect.__wrapped__.connected[ j ][ 1 ] )  
+                    }
+                  }
+                }
+              }
+            }*/
+
             // make sure to disconnect any fx in the old ugen's fx chain
             member.fx.forEach( effect => { 
               effect.disconnect()
@@ -2382,6 +2401,13 @@ const createProxies = function( pre, post, proxiedObj ) {
             })
             member.fx.length = 0
           }
+        }
+
+        if( ugen.clear !== undefined ) {
+          ugen.clear()
+        }else if( ugen.__onclear !== undefined ) {
+          // XXX does this condition ever happen?
+          ugen.__onclear()     
         }
 
         ugen = value
@@ -2395,7 +2421,7 @@ const createProxies = function( pre, post, proxiedObj ) {
 CodeMirror.keyMap.playground =  {
   fallthrough:'default',
 
-  'Ctrl-Enter': function( cm, shouldAnnotate = true ) {
+  'Ctrl-Enter': function( cm, shouldAnnotate = true, shouldClearSelection=false ) {
     const selectedCode = getSelectionCodeColumn( cm, false )
 
     flash( cm, selectedCode.selection )
@@ -2412,10 +2438,11 @@ CodeMirror.keyMap.playground =  {
       createProxies( preWindowMembers, postWindowMembers, window )
     }
 
+    Environment.lastEditor = cm
     if( shouldAnnotate === true ) {
       try {
         const markupFunction = () => {
-          cm.execCommand( 'undoSelection' )
+          if( shouldClearSelection ) cm.setSelection({ line:0, ch:0 })
           Environment.codeMarkup.process( 
             selectedCode.code, 
             selectedCode.selection, 
@@ -2434,6 +2461,7 @@ CodeMirror.keyMap.playground =  {
         }else{
           //func()
           if( Environment.annotations === true ) markupFunction()
+
         }
       } catch (e) {
         console.log( e )
