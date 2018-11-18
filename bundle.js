@@ -1020,7 +1020,6 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   }
 
   patternObject._onchange = () => {
-    return
     //let delay = Utility.beatsToMs( 1,  Gibber.Scheduler.bpm )
 
     // markStart is a closure variable that will be used in the call

@@ -109,7 +109,7 @@
           charlie@charlie-roberts.com
           </p>
 
-          <p><em>last edited:11/06/2018</em></p>
+          <p><em>last edited:11/17/2018</em></p>
 				</section>
 			</nav>
 
@@ -189,7 +189,7 @@ notesPattern.gain[0].values.set.seq( [[7,7,7,7],[16,14,12,10]], 8 )
 
       <section class='container code' >
         <h3>Catalog of techniques</h3>
-        <p>This research augments programming interfaces to include visualizations, self-modifying source code, automated annotations via inserted code comments, and a variety of other techniques. By injecting annotations and visualizations into the source code itself, we improve association between code and the annotations / visualizations depicting its effects. This placement of visualizations, characterized as <em>in situ</em> by Hofswell et. al, [<a href='https://homes.cs.washington.edu/~jhoffs/papers/2018-AugmentingCode-CHI.pdf' target=_blank>2</a> ] has been shown to aid in the understanding of programs</a> under certain conditions, which is intuitive following Gestalt principles of proximity.</p> 
+        <p>This research augments programming interfaces to include visualizations, self-modifying source code, automated annotations via inserted code comments, and a variety of other techniques. By injecting annotations and visualizations into the source code itself, we improve association between code and the annotations / visualizations depicting its effects. This placement of visualizations is characterized as <em>in situ</em> by Hofswell et. al, [<a href='https://homes.cs.washington.edu/~jhoffs/website/resources/papers/2018-AugmentingCode-CHI.pdf' target=_blank>2</a>], who demonstrated the effectiveness of such visualizations in improving both speed and accuracy when completing tasks related to data visualization and code comprehension.</p> 
 
         <h4 class='title'>Repeating static values</h5>
         <p>The simplest annotation added to our environment is a rotating border around static elements that are accessed repeatedly. The rotation provides a visual indication of when the values are used. Survey results indicated that rotation was preferable to other techniques (such as flashing) due to its less distracting nature [<a href="http://www.charlie-roberts.com/pubs/gibber.annotations.pdf" target=_blank>1</a>].</p>
@@ -270,7 +270,7 @@ drums.seq.values.rotate.seq( 1,1 )
         <h4 class='title'>Revealing 'hidden' data and function output</h5>
         <p>As we saw from prior examples, we can highlight selected members of patterns as they are selected / triggered. However, this assumes that the pattern has been fully notated, with all its members included in the source code document. But it is natural to assume that in algorithmic music the source material for musical patterns will likely be defined algorithmically, as opposed to manually entered by a programmer/perfomer.</p>
 
-        <p>In such instances pattern generators are present in the source code as opposed to the data that they generate; the generated patterns are hidden. Our solution to this problem is to present these patterns in code comments adjacent to the code representing the pattern generators responsible for creating them. In Listing 7, we'll use a 'Euclidean' rhythm, a terse description of a rhythmic pattern drawn from a well-known musicology paper by Godfried Toussaint [<a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf" target=_blank>3</a>, where a given number of pulses are fit into a given number of slots using Bjorklund's algorithm. The results of running the Euclidean rhythm will determine the output of a kick drum. Whenever a zero is present in the pattern a rest will be triggered; a one (pulse) will trigger the kick drum.</p>
+        <p>In such instances pattern generators are present in the source code as opposed to the data that they generate; the generated patterns are hidden. Our solution to this problem is to present these patterns in code comments adjacent to the code representing the pattern generators responsible for creating them. In Listing 7, we'll use a 'Euclidean' rhythm, a terse description of a rhythmic pattern drawn from a well-known musicology paper by Godfried Toussaint [<a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf" target=_blank>3</a>], where a given number of pulses are fit into a given number of slots using Bjorklund's algorithm. The results of running the Euclidean rhythm will determine the output of a kick drum. Whenever a zero is present in the pattern a rest will be triggered; a one (pulse) will trigger the kick drum.</p>
         <div id='euclid' class='example' caption='Listing 7: Revealing the output of pattern generators.'>
           <div class='editor'>
 kick = Kick('tight').trigger.seq( .75, Euclid(5,8) ) 
@@ -408,6 +408,10 @@ syn.note.seq( notes, Euclid(9,16) )
         </ul>
       </section>
 
+      <section class='container'>
+        <h3>Cite this</h3>
+        <p>If you're going to cite this website in an academic paper, please consider also citing either reference #1 or reference #7 given above; citations of such papers count more in academia than citations of a website. Plus, there's further information in them not covered in this essay. Thank you!</p>
+      </section>
 			<footer class="footer">
 				<section class="container">
 				</section>
