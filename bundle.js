@@ -2265,46 +2265,52 @@ const playCode = function( cm, shouldAnnotate=true ) {
 
 window.onload = function() {
   window.sac = sac
-  const workletPath = 'gibberish_worklet.js' 
-  Gibber.init( workletPath, new AudioContext({ latencyHint:.05 }), sac )
+  function start() {
+    const workletPath = 'gibberish_worklet.js' 
+    Gibber.init( workletPath, new AudioContext({ latencyHint:.05 }) )
 
-  environment.editor = cm
-  window.Environment = environment
-  environment.annotations = true
+    environment.editor = cm
+    window.Environment = environment
+    environment.annotations = true
 
-  environment.lastEditor = null
-  // XXX this should not be in 'debug' mode...
-  environment.debug = true
-  environment.codeMarkup = codeMarkup( Gibber )
-  environment.codeMarkup.init()
+    environment.lastEditor = null
+    // XXX this should not be in 'debug' mode...
+    environment.debug = true
+    environment.codeMarkup = codeMarkup( Gibber )
+    environment.codeMarkup.init()
 
-  environment.displayCallbackUpdates = function() {
-    Gibberish.oncallback = function( cb ) {
-      environment.console.setValue( cb.toString() )
+    environment.displayCallbackUpdates = function() {
+      Gibberish.oncallback = function( cb ) {
+        environment.console.setValue( cb.toString() )
+      }
     }
+
+    environment.Annotations = environment.codeMarkup 
+    Gibber.Environment = environment
+
+    let select = document.querySelector( 'select' ),
+      files = [
+      ]
+
+    createEditor( '#static1' )
+    createEditor( '#array1' )
+    createEditor( '#array2' )
+    createEditor( '#transform1' )
+    createEditor( '#transform2', false )
+    createEditor( '#anonymous1' )
+    createEditor( '#anonymous2' )
+    createEditor( '#euclid' )
+    createEditor( '#euclid2' )
+    createEditor( '#full' )
+    createEditor( '#sparklines1' )
+    createEditor( '#sparklines2' )
+    createEditor( '#fade' )
+      
+    window.onclick = null
+    window.onkeypress = null
   }
-
-  environment.Annotations = environment.codeMarkup 
-  Gibber.Environment = environment
-
-  let select = document.querySelector( 'select' ),
-    files = [
-    ]
-
-  createEditor( '#static1' )
-  createEditor( '#array1' )
-  createEditor( '#array2' )
-  createEditor( '#transform1' )
-  createEditor( '#transform2', false )
-  createEditor( '#anonymous1' )
-  createEditor( '#anonymous2' )
-  createEditor( '#euclid' )
-  createEditor( '#euclid2' )
-  createEditor( '#full' )
-  createEditor( '#sparklines1' )
-  createEditor( '#sparklines2' )
-  createEditor( '#fade' )
-
+  window.onclick = start
+  window.onkeypress = start
 }
 
 let shouldUseProxies = false
